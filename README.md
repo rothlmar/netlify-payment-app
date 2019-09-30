@@ -15,4 +15,6 @@ Because this is a hack week project, we're going to use all the coolest things:
 
 Activity log:
 1. Sign up at app.netlify.com and verify email.
-2. 
+2. Push code to github, add to netlify.
+3. Use Netlify settings to specify invite-only registration.
+4. Use Netlify identity tab to create and grant "admin" role

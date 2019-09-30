@@ -1,0 +1,22 @@
+{
+  "name": "payment-app-hackweek-q4",
+  "version": "0.0.1",
+  "description": "An exemplar app for taking moderately interesting payments.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/rothlmar/netlify-payment-app.git"
+  },
+  "author": "Mark Rothlisberger",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/rothlmar/netlify-payment-app/issues"
+  },
+  "homepage": "https://github.com/rothlmar/netlify-payment-app#readme",
+  "devDependencies": {
+    "netlify-lambda": "^1.6.3"
+  }
+}
