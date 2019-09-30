@@ -8,3 +8,11 @@ alpha functionality of the Payment API.  We also allow the customer to add a tip
 technician that delivers and picks up the equipment, and to edit that tip any time before the
 payment is captured.
 
+Because this is a hack week project, we're going to use all the coolest things:
+* Netlify (hosting, functions, CI/CD)
+* FaunaDB (database)
+* Vue.js (front end)
+
+Activity log:
+1. Sign up at app.netlify.com and verify email.
+2. 
