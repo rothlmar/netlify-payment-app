@@ -21,16 +21,6 @@
           Pay ${{ total_price }}
         </button>
       </div>
-      <div>
-        <h2>Payments</h2>
-        <button onclick="getPayments()">Get Past Payments</button>
-        <ul>
-          <li v-for="payment in payments">
-            {{ payment.id }} | {{ payment.status }} | ${{ payment.total_money.amount/100 }}
-          </li>
-        </ul>
-      </div>
-    </div>
     <script src="app.js"></script>
   </body>
 </html>

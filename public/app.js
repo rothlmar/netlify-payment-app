@@ -1,13 +1,6 @@
-function getPayments() {
-  return fetch('/.netlify/functions/payments', { method: 'GET' })
-    .then(response => response.json())
-    .then(response => {data.payments = response['payments']});
-}
-
 const data = {
   rental_length: 3,
   delivery_tip: 1,
-  payments: []
 };
 
 const computed = {
