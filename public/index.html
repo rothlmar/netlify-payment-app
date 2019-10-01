@@ -2,10 +2,16 @@
   <head>
     <title>Awesome site</title>
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script type="text/javascript" src="https://js.squareupsandbox.com/v2/paymentform"></script>
+    <link rel="stylesheet" type="text/css" href="mysqpaymentform.css">
   </head>
   <body>
-    <div id="app">
+    <div id="app" style="margin-top:100px">
       <h1>Hello {{ greeting }}!</h1>
+      <div id="form-container">
+        <div id="sq-card"></div>
+        <button class="button-credit-card" onclick="submitCardClick(event)">Pay</button>
+      </div>
     </div>
     <script src="app.js"></script>
   </body>

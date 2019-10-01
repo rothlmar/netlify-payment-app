@@ -3,17 +3,14 @@ const axios = require('axios');
 
 const ACCESS_TOKEN = process.env.SQUARE_ACCESS_TOKEN;
 const BASE_PATH = process.env.SQUARE_BASE_PATH;
-const TEST_NONCE = 'cnon:card-nonce-ok';
 
 exports.handler = function(event, context, callback) {
-  console.log(ACCESS_TOKEN, BASE_PATH, TEST_NONCE);
-
   if (event.httpMethod != 'POST') {
     return callback(null, {statusCode: 404, body: '{"error": "Not found"}'});
   }
   const idempotency_key = uuid4();
   const request_body = {
-    source_id: TEST_NONCE,
+    source_id: JSON.parse(event.body).nonce,
     amount_money: { amount: 100, currency: 'USD' },
     idempotency_key: idempotency_key,
     autocomplete: false
