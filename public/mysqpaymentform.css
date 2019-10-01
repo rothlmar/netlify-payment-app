@@ -28,7 +28,6 @@ body, html {
   width: 380px;
   margin: 0 auto;
   top: 50%;
-  transform: translateY(-50%);
 }
 
 /* Customize the "Pay" button */

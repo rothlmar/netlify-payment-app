@@ -3,15 +3,18 @@ const axios = require('axios');
 
 const ACCESS_TOKEN = process.env.SQUARE_ACCESS_TOKEN;
 const BASE_PATH = process.env.SQUARE_BASE_PATH;
+const DEPOSIT_AMOUNT = 200;
 
 exports.handler = function(event, context, callback) {
   if (event.httpMethod != 'POST') {
     return callback(null, {statusCode: 404, body: '{"error": "Not found"}'});
   }
+  const req_body_incoming = JSON.parse(event.body);
+  const amount_money = req_body_incoming.rental_length*100 + DEPOSIT_AMOUNT;
   const idempotency_key = uuid4();
   const request_body = {
-    source_id: JSON.parse(event.body).nonce,
-    amount_money: { amount: 100, currency: 'USD' },
+    source_id: req_body_incoming.nonce,
+    amount_money: { amount: amount_money, currency: 'USD' },
     idempotency_key: idempotency_key,
     autocomplete: false
   }
