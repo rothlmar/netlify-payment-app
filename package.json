@@ -18,5 +18,9 @@
   "homepage": "https://github.com/rothlmar/netlify-payment-app#readme",
   "devDependencies": {
     "netlify-lambda": "^1.6.3"
+  },
+  "dependencies": {
+    "axios": "^0.19.0",
+    "uuid": "^3.3.3"
   }
 }

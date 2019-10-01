@@ -14,7 +14,13 @@ Because this is a hack week project, we're going to use all the coolest things:
 * Vue.js (front end)
 
 Activity log:
+
 1. Sign up at app.netlify.com and verify email.
 2. Push code to github, add to netlify.
 3. Use Netlify settings to specify invite-only registration.
 4. Use Netlify identity tab to create and grant "admin" role
+5. Add Netlify environment variables for access token, application id, base path (for sandbox)
+
+Notes:
+
+* Can't use Square Connect SDK because something doesn't play nice with Netlify's function bundler (possibly a conflict between superagent dependency and webpack?)
