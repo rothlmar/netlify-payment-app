@@ -1,15 +1,25 @@
 <html>
   <head>
-    <title>Awesome site</title>
+    <title>Equipment Rental Payment</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
     <script type="text/javascript" src="https://js.squareupsandbox.com/v2/paymentform"></script>
     <link rel="stylesheet" type="text/css" href="mysqpaymentform.css">
   </head>
   <body>
-    <h1>Equipment Rentals</h1>
-    <div>
+    <div id="app">
+      <h1>Equipment Rental Payment</h1>
       <div id="form-container">
+        <h3>Length of Rental</h3>
+        <div><input v-model="rental_length"> weeks</div>
+        <h3>Payment Amount</h3>
+        <div>Rental: ${{ rental_price }}</div>
+        <div>Refundable deposit: $2.00</div>
+        <div>Tip (for delivery person): $<input v-model="delivery_tip"></div>
+        <h3>Payment Details</h3>
         <div id="sq-card"></div>
-        <button class="button-credit-card" onclick="submitCardClick(event)">Pay</button>
+        <button class="button-credit-card" onclick="submitCardClick(event)">
+          Pay ${{ total_price }}
+        </button>
       </div>
     </div>
     <script src="app.js"></script>
