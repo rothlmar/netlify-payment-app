@@ -1,6 +1,13 @@
+function getPayments() {
+  return fetch('/.netlify/functions/payments', { method: 'GET' })
+    .then(response => response.json())
+    .then(response => {data.payments = response['payments']});
+}
+
 const data = {
   rental_length: 3,
-  delivery_tip: 1
+  delivery_tip: 1,
+  payments: []
 };
 
 const computed = {
@@ -31,7 +38,7 @@ const paymentForm = new SqPaymentForm({
                                 rental_length: data.rental_length,
                                 tip: Number.parseFloat(data.delivery_tip)*100})
         })
-          .then(data => console.log(response.text()))
+          .then(() => setTimeout(getPayments, 3000))
       }
     }
   }
