@@ -1,3 +1,12 @@
+const data = {
+  payments: [],
+  user: null
+};
+
+const computed = {
+  isLoggedIn: function() { return this.user != null }
+}
+
 function getPayments() {
   if (netlifyIdentity.currentUser()) {
     return netlifyIdentity.currentUser().jwt().then(token => {
@@ -31,16 +40,32 @@ function cancelPayment(payment_id) {
   }
 }
 
-const data = {
-  payments: []
-};
+function refundDeposit(payment_id, current_amount) {
+  if (netlifyIdentity.currentUser()) {
+    return netlifyIdentity.currentUser().jwt().then(token => {
+      return fetch('/.netlify/functions/edit-amount',
+                   { method: 'POST',
+                     body: JSON.stringify({payment_id: payment_id, amount: current_amount - 200}),
+                     headers: {'Authorization': `Bearer ${token}`}})})
+      .then(() => setTimeout(getPayments, 2000));
+  }
+}
+
+function triggerIdAction(action) {
+  if (action == 'login') {
+    netlifyIdentity.open(action);
+  } else if (action == 'logout') {
+    netlifyIdentity.logout();
+    data.payments = [];
+    data.user = null;
+  }
+}
 
 const app = new Vue({
   el: '#adminApp',
   data: data,
-  methods: { completePayment, cancelPayment, getPayments }
+  computed: computed,
+  methods: { completePayment, cancelPayment, getPayments, refundDeposit, triggerIdAction }
 });
 
-netlifyIdentity.on('init', getPayments);
-netlifyIdentity.on('login', getPayments);
-netlifyIdentity.on('logout', () => { data.payments = []; })
+netlifyIdentity.on('login', user => {data.user = user; getPayments(); });

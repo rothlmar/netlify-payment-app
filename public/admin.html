@@ -12,12 +12,21 @@
   <body>
     <section class="section">
       <div class="container" id="adminApp">
-        <div data-netlify-identity-button>Login with Netlify Identity</div>
-        <div class="columns is-mobile is-centered">
+        <h1 class="title has-text-centered">Equipment Rental Admin</h1>
+        <div class="is-right" v-if="isLoggedIn">
+          <button class="button is-right" v-on:click="triggerIdAction('logout')">
+          Log Out
+          </button>
+        </div>
+        <div class="is-centered" v-if="!isLoggedIn">
+          <button class="button is-centered" v-on:click="triggerIdAction('login')">
+            Log In
+          </button>
+        </div>
+        <div class="columns is-mobile is-centered" v-if="isLoggedIn">
           <div class="column is-8">
             <div class="content">
               <h2>Payments</h2>
-              <button v-on:click="getPayments">Get Payments</button>
               <table class="table">
                 <thead>
                   <tr>
@@ -35,10 +44,19 @@
                     <td>
                       <button class="button is-primary"
                               v-if="payment.status == 'APPROVED'"
-                              v-on:click="completePayment(payment.id)">Complete</button>
+                              v-on:click="refundDeposit(payment.id, payment.amount_money.amount)">
+                        Refund Deposit
+                      </button>
+                      <button class="button is-primary"
+                              v-if="payment.status == 'APPROVED'"
+                              v-on:click="completePayment(payment.id)">
+                        Complete
+                      </button>
                       <button class="button is-warning"
                               v-if="payment.status == 'APPROVED'"
-                              v-on:click="cancelPayment(payment.id)">Cancel</button>
+                              v-on:click="cancelPayment(payment.id)">
+                        Cancel
+                      </button>
                     </td>
                   </tr>
                 </tbody>

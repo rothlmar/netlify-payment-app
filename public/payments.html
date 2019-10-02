@@ -1,18 +1,52 @@
+<!DOCTYPE html>
 <html>
   <head>
-    <title>Equipment Rental Payment Detail</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Equipment Rental Reservation Detail</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.5/css/bulma.min.css">
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script defer src="/js/detail.js"></script>
   </head>
   <body>
-    <div id="detail">
-      <h1>Reservation Detail</h1>
-      <ul v-if="payment != null">
-        <li>Amount: ${{ payment.amount_money.amount/100 }}</li>
-        <li>Tip: ${{ tip / 100 }}</li>
-        <li>Total: ${{ payment.total_money.amount/100 }}</li>
-        <li>Payment Status: {{ payment.status }}</li>
-      </ul>
-    </div>
-    <script src="/js/detail.js"></script>
+    <section class="section">
+      <div class="container" id="detail">
+        <h1 class="title has-text-centered">Reservation Detail</h1>
+        <div class="columns is-mobile is-centered">
+          <div class="column is-8">
+            <div class="content">
+              <ul v-if="payment != null">
+                <li>Amount: ${{ payment.amount_money.amount/100 }}</li>
+                <li>
+                  Tip: ${{ tip / 100 }}
+                </li>
+                <li>Total: ${{ payment.total_money.amount/100 }}</li>
+                <li>Payment Status: {{ payment.status }}</li>
+              </ul>
+              <div v-if="payment.status == 'APPROVED'">
+                <h3>Adjustment</h3>
+                <p>You may change the amount of the tip</p>
+                <div class="field is-horizontal">
+                  <div class="field-label">New Tip</div>
+                  <div class="field-body">
+                    <div class="field is-expanded has-addons">
+                      <p class="control is-expanded">
+                        <input class="input" v-model="new_tip">
+                      </p>
+                      <div class="control">
+                        <button class="button is-primary"
+                                v-on:click="editTip(new_tip, payment.id)">
+                          Adjust
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
   </body>
 </html>

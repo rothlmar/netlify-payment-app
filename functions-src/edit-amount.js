@@ -7,7 +7,7 @@ exports.handler = function(event, context, callback) {
     return callback(null, {statusCode: 404, body: '{"error": "Not found"}'});
   }
   const req_body_incoming = JSON.parse(event.body);
-  if (!('tip' in req_body_incoming)) {
+  if (!('amount' in req_body_incoming)) {
     return callback(null, {statusCode: 400, body: '{"error": "Missing required field: tip"}'});
   }
   if (!('payment_id' in req_body_incoming)) {
@@ -17,7 +17,7 @@ exports.handler = function(event, context, callback) {
   const idempotency_key = uuid4();
   const request_body = {
     idempotency_key: idempotency_key,
-    payment: { tip_money: { amount: req_body_incoming.tip, currency: config.CURRENCY } }
+    payment: { amount_money: { amount: req_body_incoming.amount, currency: config.CURRENCY } }
   }
 
   axios.put(`/v2/payments/${req_body_incoming.payment_id}`, request_body)
