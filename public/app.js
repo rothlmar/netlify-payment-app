@@ -30,8 +30,7 @@ const paymentForm = new SqPaymentForm({
           body: JSON.stringify({nonce: nonce,
                                 rental_length: data.rental_length,
                                 tip: Number.parseFloat(data.delivery_tip)*100})
-        })
-          .then(() => setTimeout(getPayments, 2000));
+        });
       }
     }
   }

@@ -9,13 +9,36 @@ function getPayments() {
   }
 }
 
+function completePayment(payment_id) {
+  if (netlifyIdentity.currentUser()) {
+    return netlifyIdentity.currentUser().jwt().then(token => {
+      return fetch('/.netlify/functions/complete-payment',
+                   { method: 'POST',
+                     body: JSON.stringify({payment_id: payment_id}),
+                     headers: {'Authorization': `Bearer ${token}`}})})
+      .then(() => setTimeout(getPayments, 2000));
+  }
+}
+
+function cancelPayment(payment_id) {
+  if (netlifyIdentity.currentUser()) {
+    return netlifyIdentity.currentUser().jwt().then(token => {
+      return fetch('/.netlify/functions/cancel-payment',
+                   { method: 'POST',
+                     body: JSON.stringify({payment_id: payment_id}),
+                     headers: {'Authorization': `Bearer ${token}`}})})
+      .then(() => setTimeout(getPayments, 2000));
+  }
+}
+
 const data = {
   payments: []
 };
 
 const app = new Vue({
   el: '#adminApp',
-  data: data
+  data: data,
+  methods: { completePayment, cancelPayment, getPayments }
 });
 
 netlifyIdentity.on('init', getPayments);

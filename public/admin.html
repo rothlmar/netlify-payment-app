@@ -8,10 +8,14 @@
       <div data-netlify-identity-button>Login with Netlify Identity</div>
       <div>
         <h2>Payments</h2>
-        <button onclick="getPayments()">Get Payments</button>
+        <button v-on:click="getPayments">Get Payments</button>
         <ul>
           <li v-for="payment in payments">
-            {{ payment.id }} | {{ payment.status }} | ${{ payment.total_money.amount/100 }}
+            {{ payment.id }} | {{ payment.status }} | ${{ payment.total_money.amount/100 }} |
+            <button v-if="payment.status == 'APPROVED'"
+                    v-on:click="completePayment(payment.id)">Complete</button> |
+            <button v-if="payment.status == 'APPROVED'"
+                    v-on:click="cancelPayment(payment.id)">Cancel</button>
           </li>
         </ul>
       </div>
