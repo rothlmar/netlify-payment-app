@@ -12,10 +12,8 @@ exports.handler = function(event, context, callback) {
     return callback(null, {statusCode: 401, body: '{"error": "Not authorized"}'});
   }
   const req_body_incoming = JSON.parse(event.body);
-  const full_url = `${config.BASE_PATH}/v2/payments/${req_body_incoming.payment_id}/complete`;
-  console.log('Full URL: ', full_url);
 
-  axios.post(full_url, {}, {
+  axios.post(`${config.BASE_PATH}/v2/payments/${req_body_incoming.payment_id}/complete`, {}, {
     headers: {'Authorization': `Bearer ${config.ACCESS_TOKEN}`}
   })
     .then(response =>

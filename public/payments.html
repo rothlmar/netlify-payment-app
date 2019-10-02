@@ -1,0 +1,18 @@
+<html>
+  <head>
+    <title>Equipment Rental Payment Detail</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  </head>
+  <body>
+    <div id="detail">
+      <h1>Reservation Detail</h1>
+      <ul v-if="payment != null">
+        <li>Amount: ${{ payment.amount_money.amount/100 }}</li>
+        <li>Tip: ${{ tip / 100 }}</li>
+        <li>Total: ${{ payment.total_money.amount/100 }}</li>
+        <li>Payment Status: {{ payment.status }}</li>
+      </ul>
+    </div>
+    <script src="/js/detail.js"></script>
+  </body>
+</html>

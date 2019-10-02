@@ -1,2 +1,7 @@
 [build]
   functions = "./functions"
+
+[[redirects]]
+  from = "/payments/*"
+  to = "/payments.html"
+  status = 200

@@ -1,6 +1,8 @@
 const data = {
   rental_length: 3,
-  delivery_tip: 1,
+  deposit_amount: "2.00",
+  delivery_tip: "1.00",
+  payment_id: null
 };
 
 const computed = {
@@ -10,14 +12,9 @@ const computed = {
     total_amount = deposit_amount + Number.parseFloat(this.rental_length) +
       Number.parseFloat(this.delivery_tip);
     return  total_amount.toFixed(2);
-  }
+  },
+  payment_made: function() { return this.payment_id != null }
 }
-
-const app = new Vue({
-  el: '#app',
-  data: data,
-  computed: computed
-});
 
 const paymentForm = new SqPaymentForm({
   applicationId: 'sandbox-sq0idb-ZdLpK4-bnjWPq2Qgg5F9Xw',
@@ -29,8 +26,10 @@ const paymentForm = new SqPaymentForm({
           method: 'POST',
           body: JSON.stringify({nonce: nonce,
                                 rental_length: data.rental_length,
-                                tip: Number.parseFloat(data.delivery_tip)*100})
-        });
+                                tip: Number.parseInt(Number.parseFloat(data.delivery_tip)*100)})
+        })
+          .then(response => response.json())
+          .then(response => data.payment_id = response['payment']['id']);
       }
     }
   }
@@ -41,3 +40,10 @@ function submitCardClick(event) {
   event.preventDefault();
   paymentForm.requestCardNonce();
 }
+
+const app = new Vue({
+  el: '#app',
+  data: data,
+  computed: computed,
+  methods: { submitCardClick }
+});

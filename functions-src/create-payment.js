@@ -24,10 +24,10 @@ exports.handler = function(event, context, callback) {
     request_body.tip_money = { amount: req_body_incoming.tip, currency: CURRENCY};
   }
 
-  axios.post(config.BASE_PATH + '/v2/payments', request_body, {
+  axios.post(`${config.BASE_PATH}/v2/payments`, request_body, {
     headers: {'Accept': 'application/json',
               'Content-Type': 'application/json',
-              'Authorization': 'Bearer ' + config.ACCESS_TOKEN}
+              'Authorization': `Bearer ${config.ACCESS_TOKEN}`}
   })
     .then(response =>
           callback(null, {statusCode: 200, body: JSON.stringify(response.data)}))

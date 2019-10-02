@@ -8,10 +8,10 @@ exports.handler = function(event, context, callback) {
   if (event.httpMethod != 'GET') {
     return callback(null, {statusCode: 404, body: '{"error": "Not found"}'});
   }
-  if (!user || !user.app_metadata.roles.includes(ADMIN_ROLE)) {
-    return callback(null, {statusCode: 401, body: '{"error": "Not authorized"}'});
-  }
-  axios.get(`${config.BASE_PATH}/v2/payments`, {
+  const query_params = event.queryStringParameters;
+  console.log(JSON.stringify(query_params));
+
+  axios.get(`${config.BASE_PATH}/v2/payments/${query_params.payment_id}`, {
     headers: {'Authorization': `Bearer ${config.ACCESS_TOKEN}`}
   })
     .then(response =>

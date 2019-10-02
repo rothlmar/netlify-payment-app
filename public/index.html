@@ -1,26 +1,92 @@
+<!DOCTYPE html>
 <html>
   <head>
-    <title>Equipment Rental Payment</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Equipment Rental</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.5/css/bulma.min.css">
+    <link rel="stylesheet" type="text/css" href="mysqpaymentform.css">
+
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
     <script type="text/javascript" src="https://js.squareupsandbox.com/v2/paymentform"></script>
-    <link rel="stylesheet" type="text/css" href="mysqpaymentform.css">
+    <script defer src="/js/app.js"></script>
   </head>
   <body>
-    <div id="app">
-      <h1>Equipment Rental Payment</h1>
-      <div id="form-container">
-        <h3>Length of Rental</h3>
-        <div><input v-model="rental_length"> weeks</div>
-        <h3>Payment Amount</h3>
-        <div>Rental: ${{ rental_price }}</div>
-        <div>Refundable deposit: $2.00</div>
-        <div>Tip (for delivery person): $<input v-model="delivery_tip"></div>
-        <h3>Payment Details</h3>
-        <div id="sq-card"></div>
-        <button class="button-credit-card" onclick="submitCardClick(event)">
-          Pay ${{ total_price }}
-        </button>
+    <section class="section">
+      <div class="container" id="app">
+        <h1 class="title has-text-centered">Equipment Rental</h1>
+        <div class="columns is-mobile is-centered">
+          <div class="column is-half">
+            <div class="content" v-if="!payment_made">
+              <h3>Length of Rental</h3>
+              <div class="field has-addons">
+                <div class="control">
+                  <input class="input" v-model="rental_length">
+                </div>
+                <div class="control"><a class="button is-static">weeks</a></div>
+              </div>
+              <h3>Payment Amount</h3>
+              <div class="field is-horizontal">
+                <div class="field-label">Base Price</div>
+                <div class="field-body">
+                  <div class="field is-expanded">
+                    <p class="control is-expanded">
+                      <input class="input" v-model="rental_price" readonly>
+                    </p>
+                  </div>
+                </div>
+              </div>
+              <div class="field is-horizontal">
+                <div class="field-label">Deposit</div>
+                <div class="field-body">
+                  <div class="field is-expanded">
+                    <p class="control is-expanded">
+                      <input class="input" v-model="deposit_amount" readonly>
+                    </p>
+                  </div>
+                  <p class="help">Fully refundable</p>
+                </div>
+              </div>
+              <div class="field is-horizontal">
+                <div class="field-label">Tip</div>
+                <div class="field-body">
+                  <div class="field is-expanded">
+                    <p class="control is-expanded">
+                      <input class="input is-primary" v-model="delivery_tip">
+                    </p>
+                  </div>
+                  <p class="help">For delivery person.</p>
+                </div>
+              </div>
+              <hr>
+              <div class="field is-horizontal">
+                <div class="field-label">Total</div>
+                <div class="field-body">
+                  <div class="field is-expanded">
+                    <p class="control is-expanded">
+                      <input class="input" v-model="total_price" readonly>
+                    </p>
+                  </div>
+                </div>
+              </div>
+              <div class="form-container">
+                <h3>Payment Details</h3>
+                <div id="sq-card"></div>
+                <button class="button-credit-card" v-on:click="submitCardClick">
+                  Pay ${{ total_price }}
+                </button>
+              </div>
+            </div>
+            <div class="content" v-if="payment_made">
+              Thank you for your reservation.
+              <br>
+              <a v-bind:href="'/payments/' + payment_id">View Detail</a>
+              <br>
+              <a href="/" v-on:click="payment_id = null">Make another Payment</a>
+            </div>
+          </div>
+        </div>
       </div>
-    <script src="app.js"></script>
+    </section>
   </body>
 </html>

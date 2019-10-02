@@ -1,7 +1,12 @@
+<!DOCTYPE html>
 <html>
   <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Equipment Rental Admin</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.5/css/bulma.min.css">
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script type="text/javascript" src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
   </head>
   <body>
     <div id="adminApp">
@@ -9,18 +14,33 @@
       <div>
         <h2>Payments</h2>
         <button v-on:click="getPayments">Get Payments</button>
-        <ul>
-          <li v-for="payment in payments">
-            {{ payment.id }} | {{ payment.status }} | ${{ payment.total_money.amount/100 }} |
-            <button v-if="payment.status == 'APPROVED'"
-                    v-on:click="completePayment(payment.id)">Complete</button> |
-            <button v-if="payment.status == 'APPROVED'"
-                    v-on:click="cancelPayment(payment.id)">Cancel</button>
-          </li>
-        </ul>
+        <table class="table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Status</th>
+              <th>Amount</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="payment in payments">
+              <td>{{ payment.id }}</td>
+              <td>{{ payment.status }}</td>
+              <td>${{ payment.total_money.amount/100 }}</td>
+              <td>
+                <button class="button is-primary"
+                        v-if="payment.status == 'APPROVED'"
+                        v-on:click="completePayment(payment.id)">Complete</button>
+                <button class="button is-warning"
+                        v-if="payment.status == 'APPROVED'"
+                        v-on:click="cancelPayment(payment.id)">Cancel</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
       </div>
     </div>
-    <script type="text/javascript" src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
-    <script src="admin-app.js"></script>
+    <script src="/js/admin.js"></script>
   </body>
 </html>
