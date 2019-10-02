@@ -1,0 +1,20 @@
+const config = require('./config');
+const axios = require('axios');
+const uuid4 = require('uuid/v4');
+
+exports.handler = function(event, context, callback) {
+  if (event.httpMethod != 'POST') {
+    return callback(null, {statusCode: 404, body: '{"error": "Not found"}'});
+  }
+  const req_body_incoming = JSON.parse(event.body);
+  if (!('tip' in req_body_incoming)) {
+    return callback(null, {statusCode: 400, body: '{"error": "Missing required field tip"}'});
+  }
+
+  const idempotency_key = uuid4();
+  const request_body = {
+    idempotency_key: idempotency_key,
+    payment: { tip_money: { amount: req_body_incoming.tip, currency: CURRENCY } }
+  }
+
+}

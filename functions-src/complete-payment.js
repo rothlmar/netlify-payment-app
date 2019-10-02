@@ -1,5 +1,5 @@
-const axios = require('axios');
 const config = require('./config');
+const axios = require('axios');
 
 const ADMIN_ROLE = 'admin';
 
@@ -13,9 +13,7 @@ exports.handler = function(event, context, callback) {
   }
   const req_body_incoming = JSON.parse(event.body);
 
-  axios.post(`${config.BASE_PATH}/v2/payments/${req_body_incoming.payment_id}/complete`, {}, {
-    headers: {'Authorization': `Bearer ${config.ACCESS_TOKEN}`}
-  })
+  axios.post(`/v2/payments/${req_body_incoming.payment_id}/complete`)
     .then(response =>
           callback(null, {statusCode: 200, body: JSON.stringify(response.data)}))
     .catch(response => {

@@ -11,9 +11,7 @@ exports.handler = function(event, context, callback) {
   const query_params = event.queryStringParameters;
   console.log(JSON.stringify(query_params));
 
-  axios.get(`${config.BASE_PATH}/v2/payments/${query_params.payment_id}`, {
-    headers: {'Authorization': `Bearer ${config.ACCESS_TOKEN}`}
-  })
+  axios.get(`/v2/payments/${query_params.payment_id}`)
     .then(response =>
           callback(null, {statusCode: 200, body: JSON.stringify(response.data)}))
     .catch(response =>

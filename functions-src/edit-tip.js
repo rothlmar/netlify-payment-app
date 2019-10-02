@@ -2,28 +2,25 @@ const config = require('./config');
 const axios = require('axios');
 const uuid4 = require('uuid/v4');
 
-const WEEKLY_RENTAL_AMOUNT = 100;
-const DEPOSIT_AMOUNT = 200;
-
 exports.handler = function(event, context, callback) {
   if (event.httpMethod != 'POST') {
     return callback(null, {statusCode: 404, body: '{"error": "Not found"}'});
   }
   const req_body_incoming = JSON.parse(event.body);
-  const amount_money = req_body_incoming.rental_length*WEEKLY_RENTAL_AMOUNT + DEPOSIT_AMOUNT;
+  if (!('tip' in req_body_incoming)) {
+    return callback(null, {statusCode: 400, body: '{"error": "Missing required field: tip"}'});
+  }
+  if (!('payment_id' in req_body_incoming)) {
+    return callback(null, {statusCode: 400, body: '{"error": "Missing required field: payment_id"}'});
+  }
 
   const idempotency_key = uuid4();
   const request_body = {
-    source_id: req_body_incoming.nonce,
-    amount_money: { amount: amount_money, currency: config.CURRENCY },
     idempotency_key: idempotency_key,
-    autocomplete: false
-  }
-  if ('tip' in req_body_incoming) {
-    request_body.tip_money = { amount: req_body_incoming.tip, currency: config.CURRENCY};
+    payment: { tip_money: { amount: req_body_incoming.tip, currency: CURRENCY } }
   }
 
-  axios.post('/v2/payments', request_body)
+  axios.put(`/v2/payments/${req_body_incoming.payment_id}`, request_body)
     .then(response =>
           callback(null, {statusCode: 200, body: JSON.stringify(response.data)}))
     .catch(response =>

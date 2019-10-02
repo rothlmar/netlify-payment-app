@@ -7,40 +7,46 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.5/css/bulma.min.css">
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
     <script type="text/javascript" src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+    <script defer src="/js/admin.js"></script>
   </head>
   <body>
-    <div id="adminApp">
-      <div data-netlify-identity-button>Login with Netlify Identity</div>
-      <div>
-        <h2>Payments</h2>
-        <button v-on:click="getPayments">Get Payments</button>
-        <table class="table">
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Status</th>
-              <th>Amount</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="payment in payments">
-              <td>{{ payment.id }}</td>
-              <td>{{ payment.status }}</td>
-              <td>${{ payment.total_money.amount/100 }}</td>
-              <td>
-                <button class="button is-primary"
-                        v-if="payment.status == 'APPROVED'"
-                        v-on:click="completePayment(payment.id)">Complete</button>
-                <button class="button is-warning"
-                        v-if="payment.status == 'APPROVED'"
-                        v-on:click="cancelPayment(payment.id)">Cancel</button>
-              </td>
-            </tr>
-          </tbody>
-        </table>
+    <section class="section">
+      <div class="container" id="adminApp">
+        <div data-netlify-identity-button>Login with Netlify Identity</div>
+        <div class="columns is-mobile is-centered">
+          <div class="column is-8">
+            <div class="content">
+              <h2>Payments</h2>
+              <button v-on:click="getPayments">Get Payments</button>
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>Status</th>
+                    <th>Amount</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-for="payment in payments">
+                    <td>{{ payment.id }}</td>
+                    <td>{{ payment.status }}</td>
+                    <td>${{ payment.total_money.amount/100 }}</td>
+                    <td>
+                      <button class="button is-primary"
+                              v-if="payment.status == 'APPROVED'"
+                              v-on:click="completePayment(payment.id)">Complete</button>
+                      <button class="button is-warning"
+                              v-if="payment.status == 'APPROVED'"
+                              v-on:click="cancelPayment(payment.id)">Cancel</button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
       </div>
-    </div>
-    <script src="/js/admin.js"></script>
+    </section>
   </body>
 </html>
