@@ -33,9 +33,8 @@ exports.handler = function(event, context, callback) {
       return db_client.query(q.Create(q.Ref("rentals/rental"), {data: { payment_id: response.data.payment.id } }))
         .then(db_rsp => { console.log(db_rsp); return response; })
     })
-    .then(
-      callback(null, {statusCode: 200, body: JSON.stringify(response.data)})
-    })
+    .then(response =>
+          callback(null, {statusCode: 200, body: JSON.stringify(response.data)}))
     .catch(response =>
            callback(null, {statusCode: 500, body: JSON.stringify(response.data)}));
 }
