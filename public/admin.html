@@ -13,12 +13,12 @@
     <section class="section">
       <div class="container" id="adminApp">
         <h1 class="title has-text-centered">Equipment Rental Admin</h1>
-        <div class="is-right" v-if="isLoggedIn">
+        <div v-if="isLoggedIn">
           <button class="button is-right" v-on:click="triggerIdAction('logout')">
           Log Out
           </button>
         </div>
-        <div class="is-centered" v-if="!isLoggedIn">
+        <div v-if="!isLoggedIn">
           <button class="button is-centered" v-on:click="triggerIdAction('login')">
             Log In
           </button>
