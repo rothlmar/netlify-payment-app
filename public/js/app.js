@@ -2,11 +2,18 @@ const data = {
   rental_length: 3,
   deposit_amount: "2.00",
   delivery_tip: "1.00",
-  payment_id: null
+  payment_id: null,
+  start_date: new Date().toISOString().slice(0, 10),
+  rental_address: '',
+  contact_name: '',
+  contact_number: '',
+  rental_options: ['Medical Device', 'Bouncy Castle'],
+  rental_selected: ''
 };
 
 const computed = {
   rental_price: function() { return Number.parseFloat(this.rental_length).toFixed(2) },
+  rental_period: function() { return this.rental_selected == 'Bouncy Castle' ? 'days' : 'weeks' },
   total_price: function() {
     deposit_amount = 2;
     total_amount = deposit_amount + Number.parseFloat(this.rental_length) +
@@ -24,9 +31,16 @@ const paymentForm = new SqPaymentForm({
       if (!errors) {
         fetch('/.netlify/functions/create-payment', {
           method: 'POST',
-          body: JSON.stringify({nonce: nonce,
-                                rental_length: data.rental_length,
-                                tip: Number.parseInt(Number.parseFloat(data.delivery_tip)*100)})
+          body: JSON.stringify({
+            nonce: nonce,
+            rental_length: data.rental_length,
+            tip: Number.parseInt(Number.parseFloat(data.delivery_tip)*100),
+            start_date: data.start_date,
+            rental_address: data.rental_address,
+            contact_name: data.contact_name,
+            contact_number: data.contact_number,
+            rental_selected: data.rental_selected
+          })
         })
           .then(response => response.json())
           .then(response => data.payment_id = response['payment']['id']);

@@ -7,14 +7,32 @@ const computed = {
   isLoggedIn: function() { return this.user != null }
 }
 
+const app = new Vue({
+  el: '#adminApp',
+  data: data,
+  computed: computed,
+  methods: { completePayment, cancelPayment, getPayments, refundDeposit, triggerIdAction },
+  filters: { toMoney }
+});
+
 function getPayments() {
   if (netlifyIdentity.currentUser()) {
     return netlifyIdentity.currentUser().jwt().then(token => {
-      return fetch('/.netlify/functions/payments',
+      return fetch('/.netlify/functions/list-payments',
                    { method: 'GET',
                      headers: {'Authorization': `Bearer ${token}`}})})
       .then(response => response.json())
-      .then(response => {data.payments = response['payments']});
+      .then(response => data.payments = response['payments'])
+      .then(payments => {
+        payments.map(payment => {
+          fetch(`/.netlify/functions/get-payment?payment_id=${payment.id}`,
+                { method: 'GET' })
+            .then(rsp => rsp.json())
+            .then(rsp => {
+              payment.info = rsp;
+              app.$forceUpdate();
+            }) });
+      })
   }
 }
 
@@ -61,11 +79,11 @@ function triggerIdAction(action) {
   }
 }
 
-const app = new Vue({
-  el: '#adminApp',
-  data: data,
-  computed: computed,
-  methods: { completePayment, cancelPayment, getPayments, refundDeposit, triggerIdAction }
-});
+function toMoney(value) {
+  if (!value) {
+    return '$0.00';
+  }
+  return '$' + value.toFixed(2);
+}
 
 netlifyIdentity.on('login', user => {data.user = user; getPayments(); });

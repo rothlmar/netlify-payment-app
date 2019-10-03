@@ -30,17 +30,29 @@
               <table class="table">
                 <thead>
                   <tr>
-                    <th>ID</th>
-                    <th>Status</th>
-                    <th>Amount</th>
+                    <th>Payment Status</th>
+                    <th>Payment Amount</th>
+                    <th>Rental Details</th>
                     <th>Actions</th>
                   </tr>
                 </thead>
                 <tbody>
                   <tr v-for="payment in payments">
-                    <td>{{ payment.id }}</td>
                     <td>{{ payment.status }}</td>
-                    <td>${{ payment.total_money.amount/100 }}</td>
+                    <td>{{ payment.total_money.amount/100 | toMoney }}</td>
+                    <td>
+                      <div v-if="'info' in payment">
+                        <p v-if="'start_date' in payment.info">
+                          {{ payment.info.start_date }}
+                        </p>
+                        <p v-if="'contact_number' in payment.info">
+                          {{ payment.info.contact_number }} ({{ payment.info.contact_name }})
+                        </p>
+                        <p v-if="'rental_address' in payment.info">
+                          {{ payment.info.rental_address }}
+                        </p>
+                      </div>
+                    </td>
                     <td>
                       <button class="button is-primary"
                               v-if="payment.status == 'APPROVED'"
@@ -50,12 +62,12 @@
                       <button class="button is-primary"
                               v-if="payment.status == 'APPROVED'"
                               v-on:click="completePayment(payment.id)">
-                        Complete
+                        Complete Payment
                       </button>
                       <button class="button is-warning"
                               v-if="payment.status == 'APPROVED'"
                               v-on:click="cancelPayment(payment.id)">
-                        Cancel
+                        Cancel Payment
                       </button>
                     </td>
                   </tr>

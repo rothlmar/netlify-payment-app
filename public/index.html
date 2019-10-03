@@ -14,47 +14,92 @@
   <body>
     <section class="section">
       <div class="container" id="app">
-        <h1 class="title has-text-centered">Equipment Rental</h1>
+        <h1 class="title has-text-centered">A1 Medical Equipment and Party Rentals</h1>
         <div class="columns is-mobile is-centered">
           <div class="column is-half">
             <div class="content" v-if="!payment_made">
-              <h3>Length of Rental</h3>
-              <div class="field has-addons">
-                <div class="control">
-                  <input class="input" v-model="rental_length">
+              <h3>Contact Information</h3>
+              <div class="field is-horizontal">
+                <div class="field-label">Name</div>
+                <div class="field-body">
+                  <p class="control">
+                    <input class="input" v-model="contact_name">
+                  </p>
                 </div>
-                <div class="control"><a class="button is-static">weeks</a></div>
+              </div>
+              <div class="field is-horizontal">
+                <div class="field-label">Phone Number</div>
+                <div class="field-body">
+                  <p class="control">
+                    <input class="input" v-model="contact_number">
+                  </p>
+                </div>
+              </div>
+              <div class="field is-expanded is-horizontal">
+                <div class="field-label">Delivery Address</div>
+                <div class="field-body">
+                  <div class="field is-expanded">
+                    <p class="control">
+                      <input class="input" v-model="rental_address">
+                    </p>
+                  </div>
+                </div>
+              </div>
+              <h3>Rental Details</h3>
+              <div class="field is-horizontal">
+                <div class="field-label">Type</div>
+                <div class="field-body">
+                  <div class="select">
+                    <select v-model="rental_selected">
+                      <option disabled value="">Please Select One</option>
+                      <option v-for="option in rental_options" v-bind:value="option">
+                        {{ option }}
+                      </option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+              <div class="field is-horizontal">
+                <div class="field-label">Length</div>
+                <div class="field-body">
+                  <div class="control">
+                    <input class="input" v-model="rental_length" type="number">
+                  </div>
+                    <div class="control"><a class="button is-static">{{ rental_period }}</a></div>
+                </div>
+              </div>
+              <div class="field is-horizontal">
+                <div class="field-label">Rental Start Date</div>
+                <div class="field-body">
+                  <p class="control">
+                    <input class="input" type="date" v-model="start_date">
+                  </p>
+                </div>
               </div>
               <h3>Payment Amount</h3>
               <div class="field is-horizontal">
                 <div class="field-label">Base Price</div>
                 <div class="field-body">
-                  <div class="field is-expanded">
-                    <p class="control is-expanded">
-                      <input class="input" v-model="rental_price" readonly>
-                    </p>
-                  </div>
+                  <p class="control">
+                    <input class="input" v-model="rental_price" readonly>
+                  </p>
                 </div>
               </div>
               <div class="field is-horizontal">
                 <div class="field-label">Deposit</div>
                 <div class="field-body">
-                  <div class="field is-expanded">
-                    <p class="control is-expanded">
-                      <input class="input" v-model="deposit_amount" readonly>
-                    </p>
-                  </div>
+                  <p class="control">
+                    <input class="input" v-model="deposit_amount" readonly>
+                  </p>
                   <p class="help">Fully refundable</p>
                 </div>
               </div>
               <div class="field is-horizontal">
                 <div class="field-label">Tip</div>
                 <div class="field-body">
-                  <div class="field is-expanded">
-                    <p class="control is-expanded">
-                      <input class="input is-primary" v-model="delivery_tip">
-                    </p>
-                  </div>
+                  <p class="control">
+                    <input class="input is-primary" v-model="delivery_tip" type="number">
+                  </p>
                   <p class="help">For delivery person.</p>
                 </div>
               </div>
@@ -62,11 +107,9 @@
               <div class="field is-horizontal">
                 <div class="field-label">Total</div>
                 <div class="field-body">
-                  <div class="field is-expanded">
-                    <p class="control is-expanded">
+                    <p class="control">
                       <input class="input" v-model="total_price" readonly>
                     </p>
-                  </div>
                 </div>
               </div>
               <div class="form-container">
