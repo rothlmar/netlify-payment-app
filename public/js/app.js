@@ -8,7 +8,8 @@ const data = {
   contact_name: '',
   contact_number: '',
   rental_options: ['Medical Device', 'Bouncy Castle'],
-  rental_selected: ''
+  rental_selected: '',
+  email_address: ''
 };
 
 const computed = {
@@ -55,9 +56,16 @@ function submitCardClick(event) {
   paymentForm.requestCardNonce();
 }
 
+function sendEmail(payment_id, email_address) {
+  return fetch('/.netlify/functions/send-email', {
+    method: 'POST',
+    body: JSON.stringify({ payment_id, email_address })
+  });
+}
+
 const app = new Vue({
   el: '#app',
   data: data,
   computed: computed,
-  methods: { submitCardClick }
+  methods: { submitCardClick, sendEmail }
 });

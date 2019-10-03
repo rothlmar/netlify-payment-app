@@ -8,7 +8,7 @@
     <link rel="stylesheet" type="text/css" href="mysqpaymentform.css">
 
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
-    <script type="text/javascript" src="https://js.squareupsandbox.com/v2/paymentform"></script>
+    <script defer type="text/javascript" src="https://js.squareupsandbox.com/v2/paymentform"></script>
     <script defer src="/js/app.js"></script>
   </head>
   <body>
@@ -121,11 +121,16 @@
               </div>
             </div>
             <div class="content" v-if="payment_made">
-              Thank you for your reservation.
-              <br>
+              <p>Thank you for your reservation.</p>
               <a v-bind:href="'/payments/' + payment_id">View Detail</a>
-              <br>
-              <a href="/" v-on:click="payment_id = null">Make another Payment</a>
+              <p>To receive an email with a link to check on this reservation, please enter
+                your address here:
+                <input class="input" type="email" v-model="email_address">
+                <button class="button is-primary" v-on:click="sendEmail(payment_id, email_address)">
+                  Send Reminder Email
+                </button>
+              </p>
+              <p><a href="/" v-on:click="payment_id = null">Make another Payment</a></p>
             </div>
           </div>
         </div>

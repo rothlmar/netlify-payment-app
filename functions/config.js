@@ -6,5 +6,7 @@ axios.defaults.headers.common['Authorization'] =  `Bearer ${process.env.SQUARE_A
 module.exports = {
   ACCESS_TOKEN: process.env.SQUARE_ACCESS_TOKEN,
   BASE_PATH: process.env.SQUARE_BASE_PATH,
-  CURRENCY: 'USD'
+  CURRENCY: 'USD',
+  EMAIL_FROM: 'rothlmar@gmail.com',
+  APPLICATION_BASE: 'https://payment-app-hackweek.netlify.com'
 }

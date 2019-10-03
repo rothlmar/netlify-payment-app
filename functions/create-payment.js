@@ -33,7 +33,7 @@ exports.handler = function(event, context, callback) {
     .then(response => {
       rental_details.payment_id = response.data.payment.id;
       return db_client.query(q.Create(q.Collection('rentals'), {data: rental_details }))
-        .then(db_rsp => { console.log('DB RSP IS: ', JSON.stringify(db_rsp)); return response; })
+        .then(db_rsp => response)
         .catch(db_rsp => { console.log('DB ERROR IS', JSON.stringify(db_rsp)); return response; })
     })
     .then(response =>
