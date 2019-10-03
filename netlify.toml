@@ -1,6 +1,5 @@
 [build]
   functions = "./functions"
-  functionsSource = "./functions-src"
 
 [dev]
   publish = "public"
