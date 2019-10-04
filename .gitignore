@@ -1,3 +1,4 @@
 *~
 public/*.html
 public/js/*.js
+.env

@@ -1,3 +1,4 @@
+require('dotenv').config();
 const { src, dest, parallel } = require('gulp');
 const replace = require('gulp-replace');
 

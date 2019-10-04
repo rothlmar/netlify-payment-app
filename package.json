@@ -22,6 +22,7 @@
   "dependencies": {
     "@sendgrid/mail": "^6.4.0",
     "axios": "^0.19.0",
+    "dotenv": "^8.1.0",
     "faunadb": "^2.8.1",
     "square-connect": "^2.20190925.0",
     "uuid": "^3.3.3"
