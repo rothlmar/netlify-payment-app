@@ -8,7 +8,10 @@
     <link rel="stylesheet" type="text/css" href="mysqpaymentform.css">
 
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
-    <script defer type="text/javascript" src="#{ square_payment_form_script_url }"></script>
+    <script defer
+            type="text/javascript"
+            src="#{ square_payment_form_script_base_path }/v2/paymentform">
+    </script>
     <script defer src="/js/index.js"></script>
   </head>
   <body>
@@ -126,7 +129,8 @@
               <p>To receive an email with a link to check on this reservation, please enter
                 your address here:
                 <input class="input" type="email" v-model="email_address">
-                <button class="button is-primary" v-on:click="sendEmail(payment_id, email_address)">
+                <button class="button is-primary"
+                        v-on:click="sendEmail(payment_id, email_address)">
                   Send Reminder Email
                 </button>
               </p>
