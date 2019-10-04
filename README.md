@@ -12,6 +12,7 @@ Because this is a hack week project, we're going to use all the coolest things:
 * Netlify (hosting, functions, CI/CD)
 * FaunaDB (database)
 * Vue.js (front end)
+* Bulma (CSS framework)
 
 Activity log:
 

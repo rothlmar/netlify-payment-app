@@ -16,13 +16,12 @@
     "url": "https://github.com/rothlmar/netlify-payment-app/issues"
   },
   "homepage": "https://github.com/rothlmar/netlify-payment-app#readme",
-  "devDependencies": {
-    "netlify-lambda": "^1.6.3"
-  },
+  "devDependencies": {},
   "dependencies": {
     "@sendgrid/mail": "^6.4.0",
     "axios": "^0.19.0",
     "faunadb": "^2.8.1",
+    "square-connect": "^2.20190925.0",
     "uuid": "^3.3.3"
   }
 }

@@ -1,7 +1,7 @@
 const config = require('./config');
-const axios = require('axios');
 
 const ADMIN_ROLE = 'admin';
+const paymentsApi = config.PAYMENTS_API;
 
 exports.handler = function(event, context, callback) {
   const { user } = context.clientContext
@@ -13,9 +13,7 @@ exports.handler = function(event, context, callback) {
   }
   const req_body_incoming = JSON.parse(event.body);
 
-  axios.post(`/v2/payments/${req_body_incoming.payment_id}/cancel`)
-    .then(response =>
-          callback(null, {statusCode: 200, body: JSON.stringify(response.data)}))
-    .catch(response =>
-           callback(null, {statusCode: 500, body: JSON.stringify(response.data)}));
+  paymentsApi.cancelPayment(req_body_incoming.payment_id)
+    .then(payment => callback(null, {statusCode: 200, body: JSON.stringify(payment)}))
+    .catch(error => callback(null, {statusCode: 500, body: JSON.stringify(error)}));
 }

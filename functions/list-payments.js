@@ -1,7 +1,7 @@
 const config = require('./config');
-const axios = require('axios');
 
 const ADMIN_ROLE = 'admin';
+const paymentsApi = config.PAYMENTS_API;
 
 exports.handler = function(event, context, callback) {
   const { user } = context.clientContext
@@ -11,9 +11,7 @@ exports.handler = function(event, context, callback) {
   if (!user || !user.app_metadata.roles.includes(ADMIN_ROLE)) {
     return callback(null, {statusCode: 401, body: '{"error": "Not authorized"}'});
   }
-  axios.get('/v2/payments')
-    .then(response =>
-          callback(null, {statusCode: 200, body: JSON.stringify(response.data)}))
-    .catch(response =>
-           callback(null, {statusCode: 500, body: JSON.stringify(response.data)}));
+  paymentsApi.listPayments({})
+    .then(payments => callback(null, {statusCode: 200, body: JSON.stringify(payments)}))
+    .catch(error => callback(null, {statusCode: 500, body: JSON.stringify(error)}));
 }
