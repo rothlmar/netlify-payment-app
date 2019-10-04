@@ -1,5 +1,7 @@
 [build]
   functions = "./functions"
+  publish = "public"
+  command = "npm install gulp && gulp"
 
 [dev]
   publish = "public"

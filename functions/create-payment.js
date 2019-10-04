@@ -29,6 +29,8 @@ exports.handler = function(event, context, callback) {
     request_body.tip_money = { amount: tip, currency: config.CURRENCY};
   }
 
+  // Constructing this directly, instead of using the API, in case we want to use
+  // alpha features that are not yet in the CreatePaymentRequest
   axios.post('/v2/payments', request_body)
     .then(response => {
       rental_details.payment_id = response.data.payment.id;

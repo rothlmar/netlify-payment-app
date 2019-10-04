@@ -20,6 +20,7 @@ exports.handler = function(event, context, callback) {
     payment: { amount_money: { amount: req_body_incoming.amount, currency: config.CURRENCY } }
   }
 
+  // This is an alpha API feature--not incuded in Square Connect SDK
   axios.put(`/v2/payments/${req_body_incoming.payment_id}`, request_body)
     .then(response =>
           callback(null, {statusCode: 200, body: JSON.stringify(response.data)}))

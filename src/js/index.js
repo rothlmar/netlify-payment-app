@@ -25,7 +25,7 @@ const computed = {
 }
 
 const paymentForm = new SqPaymentForm({
-  applicationId: 'sandbox-sq0idb-ZdLpK4-bnjWPq2Qgg5F9Xw',
+  applicationId: '#{ square_application_id }',
   card: { elementId: 'sq-card' },
   callbacks: {
     cardNonceResponseReceived: function(errors, nonce, paymentData, contacts) {

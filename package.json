@@ -16,7 +16,9 @@
     "url": "https://github.com/rothlmar/netlify-payment-app/issues"
   },
   "homepage": "https://github.com/rothlmar/netlify-payment-app#readme",
-  "devDependencies": {},
+  "devDependencies": {
+    "gulp-replace": "^1.0.0"
+  },
   "dependencies": {
     "@sendgrid/mail": "^6.4.0",
     "axios": "^0.19.0",
