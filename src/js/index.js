@@ -75,6 +75,22 @@ const paymentForm = new SqPaymentForm({
             label: 'Subtotal',
             amount: '1.00',
             pending: false
+          },
+          {
+            label: 'Shipping',
+            amount: '1.00',
+            pending: false
+          }
+        ],
+        shippingOptions: [
+          {
+            id: '1',
+            label: 'Standard',
+            amount: '1.00'
+          },
+          { id: '2',
+            label: 'Express',
+            amount: '2.00'
           }
         ]
       };
