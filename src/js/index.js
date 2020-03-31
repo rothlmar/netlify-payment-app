@@ -101,6 +101,57 @@ const paymentForm = new SqPaymentForm({
 });
 paymentForm.build();
 
+const baseGooglePayRequest = {
+  apiVersion: 2,
+  apiVersionMinor: 0
+};
+
+const tokenizationSpecification = {
+  type: 'PAYMENT_GATEWAY',
+  parameters: {
+    gateway: 'square',
+    gatewayMerchantId: 'example'
+  }
+};
+
+const allowedCardNetworks = ["AMEX", "DISCOVER", "INTERAC", "JCB", "MASTERCARD", "VISA"];
+const allowedCardAuthMethods = ["PAN_ONLY", "CRYPTOGRAM_3DS"];
+
+const baseCardPaymentMethod = {
+  type: 'CARD',
+  parameters: {
+    allowedAuthMethods: allowedCardAuthMethods,
+    allowedCardNetworks: allowedCardNetworks
+  }
+};
+
+const cardPaymentMethod = Object.assign(
+  {tokenizationSpecification: tokenizationSpecification},
+  baseCardPaymentMethod
+);
+
+let paymentsClient;
+
+function doGoogleStuff() {
+  console.log("THIS IS LOADED AFTER GOOGLE PAY FORM LOADED");
+  paymentsClient = new google.payments.api.PaymentsClient({environment: 'TEST'});
+  const isReadyToPayRequest = Object.assign({}, baseGooglePayRequest);
+  isReadyToPayRequest.allowedPaymentMethods = [baseCardPaymentMethod];
+  paymentsClient.isReadyToPay(isReadyToPayRequest)
+    .then(function(response) {
+      if (response.result) {
+        console.log("READY TO PAY!!!!!!");
+        console.log(response.result);
+        const button = paymentsClient.createButton({onClick: () => console.log("TODO ADD HANDLER") });
+        document.getElementById('google-pay-direct').appendChild(button);
+      }
+    })
+    .catch(function(err) {
+      console.log("NOT READY TO PAY!");
+      console.log(err);
+    })
+}
+
 function submitCardClick(event) {
   event.preventDefault();
   paymentForm.requestCardNonce();
