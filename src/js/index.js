@@ -64,7 +64,19 @@ const paymentForm = new SqPaymentForm({
         requestShippingAddres: true,
         requestBillingAddress: true,
         currencyCode: 'USD',
-        countryCode: 'US'
+        countryCode: 'US',
+        total: {
+          label: 'MERCHANT NAME',
+          amount: '1.00',
+          pending: false
+        },
+        lineItems: [
+          {
+            label: 'Subtotal',
+            amount: '1.00',
+            pending: false
+          }
+        ]
       };
 
       return paymentRequestJson;

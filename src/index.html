@@ -117,12 +117,16 @@
               </div>
               <div class="form-container">
                 <h3>Payment Details</h3>
+                <div>
+                  <button id="sq-google-pay" class="button-google-pay"></button>
+                </div>
+                <!--
                 <div id="sq-card"></div>
-                <button id="sq-google-pay" class="button-google-pay"></button>
                 <button class="button-credit-card" v-on:click="submitCardClick">
                   Pay ${{ total_price }}
                 </button>
               </div>
+              -->
             </div>
             <div class="content" v-if="payment_made">
               <p>Thank you for your reservation.</p>
