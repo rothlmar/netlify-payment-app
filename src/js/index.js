@@ -27,7 +27,7 @@ const computed = {
 const paymentForm = new SqPaymentForm({
   applicationId: '#{ square_application_id }',
   locationId: '#{ square_location_id }',
-  card: { elementId: 'sq-card' },
+  // card: { elementId: 'sq-card' },
   googlePay: { elementId: 'sq-google-pay' },
   callbacks: {
     cardNonceResponseReceived: function(errors, nonce, paymentData, contacts) {
