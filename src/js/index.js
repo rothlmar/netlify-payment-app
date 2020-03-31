@@ -27,6 +27,7 @@ const computed = {
 const paymentForm = new SqPaymentForm({
   applicationId: '#{ square_application_id }',
   card: { elementId: 'sq-card' },
+  googlePay: { elementId: 'sq-google-pay' },
   callbacks: {
     cardNonceResponseReceived: function(errors, nonce, paymentData, contacts) {
       if (!errors) {
@@ -46,6 +47,26 @@ const paymentForm = new SqPaymentForm({
           .then(response => response.json())
           .then(response => data.payment_id = response['payment']['id']);
       }
+    },
+    methodsSupported: function(methods, unsupportedReason) {
+      console.log(methods);
+      var googlePayBtn = document.getElementById('sq-google-pay');
+
+      if (methods.googlePay === true) {
+        googlePayBtn.style.display = 'inline-block';
+      } else {
+        console.log(unsupportedReason);
+      }
+    },
+    createPaymentRequest: function() {
+      let paymentRequestJson = {
+        requestShippingAddres: true,
+        requestBillingAddress: true,
+        currencyCode: 'USD',
+        countryCode: 'US'
+      };
+
+      return paymentRequestJson;
     }
   }
 });
