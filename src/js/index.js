@@ -130,6 +130,19 @@ const cardPaymentMethod = Object.assign(
   baseCardPaymentMethod
 );
 
+const paymentDataRequest = Object.assign({}, baseGooglePayRequest);
+paymentDataRequest.allowedPaymentMethods = [cardPaymentMethod]
+paymentDataRequest.transactionInfo = {
+  totalPriceStatus: 'FINAL',
+  totalPrice: '6.00',
+  currencyCode: 'USD',
+  countryCode: 'US'
+}
+paymentDataRequest.merchantInfo = {
+  merchantName: 'Example Merchant',
+  merchantId: '01234567890123456789'
+}
+
 let paymentsClient;
 
 function doGoogleStuff() {
@@ -140,14 +153,24 @@ function doGoogleStuff() {
   paymentsClient.isReadyToPay(isReadyToPayRequest)
     .then(function(response) {
       if (response.result) {
-        console.log("READY TO PAY!!!!!!");
         console.log(response.result);
-        const button = paymentsClient.createButton({onClick: () => console.log("TODO ADD HANDLER") });
+        const button = paymentsClient.createButton({
+          onClick: () => console.log("YOU JUST CLICKED BUT NOTHING HAPPENED")
+
+          // () => paymentsClient.loadPaymentData(paymentDataRequest)
+          //   .then(function(paymentData) {
+          //     paymentToken = paymentData.paymentMethodData.tokenizationData.token;
+          //     console.log("PAYMENT TOKEN ", paymentToken);
+          //     console.log("PAYMENT DATA ", paymentData);
+          //   })
+          //   .catch(function(err) {
+          //     console.error(err);
+          //   })
+        });
         document.getElementById('google-pay-direct').appendChild(button);
       }
     })
     .catch(function(err) {
-      console.log("NOT READY TO PAY!");
       console.log(err);
     })
 }
