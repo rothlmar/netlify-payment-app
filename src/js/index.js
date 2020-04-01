@@ -12,15 +12,17 @@ const data = {
   email_address: ''
 };
 
+function compute_total_price(rental_length, delivery_tip) {
+  deposit_amount = 2;
+  total_amount = deposit_amount + Number.parseFloat(rental_length) +
+    Number.parseFloat(delivery_tip);
+  return total_amount.toFixed(2);
+}
+
 const computed = {
   rental_price: function() { return Number.parseFloat(this.rental_length).toFixed(2) },
   rental_period: function() { return this.rental_selected == 'Bouncy Castle' ? 'days' : 'weeks' },
-  total_price: function() {
-    deposit_amount = 2;
-    total_amount = deposit_amount + Number.parseFloat(this.rental_length) +
-      Number.parseFloat(this.delivery_tip);
-    return  total_amount.toFixed(2);
-  },
+  total_price: function() { return compute_total_price(this.rental_length, this.delivery_tip) },
   payment_made: function() { return this.payment_id != null }
 }
 
@@ -50,13 +52,12 @@ const paymentForm = new SqPaymentForm({
       }
     },
     methodsSupported: function(methods, unsupportedReason) {
-      console.log(methods);
       var googlePayBtn = document.getElementById('sq-google-pay');
 
       if (methods.googlePay === true) {
         googlePayBtn.style.display = 'inline-block';
       } else {
-        console.log(unsupportedReason);
+        console.log(unsupportedReason.message);
       }
     },
     createPaymentRequest: function() {
@@ -140,7 +141,6 @@ function doGoogleStuff() {
   paymentsClient.isReadyToPay(isReadyToPayRequest)
     .then(function(response) {
       if (response.result) {
-        console.log(response.result);
         const button = paymentsClient.createButton({ onClick: onGooglePaymentButtonClicked });
         document.getElementById('google-pay-direct').appendChild(button);
       }
@@ -155,7 +155,7 @@ function onGooglePaymentButtonClicked() {
   paymentDataRequest.allowedPaymentMethods = [cardPaymentMethod];
   paymentDataRequest.transactionInfo = {
     totalPriceStatus: 'FINAL',
-    totalPrice: '6.00',
+    totalPrice: compute_total_price(data.rental_length, data.delivery_tip),
     currencyCode: 'USD',
     countryCode: 'US'
   };
@@ -166,7 +166,8 @@ function onGooglePaymentButtonClicked() {
   paymentsClient.loadPaymentData(paymentDataRequest)
     .then(function(paymentData) {
       console.log("RECEIVED PAYMENT DATA");
-      //     paymentToken = paymentData.paymentMethodData.tokenizationData.token;
+      paymentToken = paymentData.paymentMethodData.tokenizationData.token;
+      console.log(paymentToken);
     })
     .catch(function(err) {
       console.error("THERE WAS AN ERROR");
