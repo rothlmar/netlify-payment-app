@@ -40,6 +40,8 @@ exports.handler = function(event, context, callback) {
     })
     .then(response =>
           callback(null, {statusCode: 200, body: JSON.stringify(response.data)}))
-    .catch(response =>
-           callback(null, {statusCode: 500, body: JSON.stringify(response.data)}));
+    .catch(error => {
+      callback(null, {statusCode: 500, body: JSON.stringify(error)});
+    });
+
 }
