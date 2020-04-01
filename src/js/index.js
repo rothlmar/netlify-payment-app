@@ -19,6 +19,24 @@ function compute_total_price(rental_length, delivery_tip) {
   return total_amount.toFixed(2);
 }
 
+function call_create_payment(nonce, data) {
+  return fetch('/.netlify/functions/create-payment', {
+    method: 'POST',
+    body: JSON.stringify({
+      nonce: nonce,
+      rental_length: data.rental_length,
+      tip: Number.parseInt(Number.parseFloat(data.delivery_tip)*100),
+      start_date: data.start_date,
+      rental_address: data.rental_address,
+      contact_name: data.contact_name,
+      contact_number: data.contact_number,
+      rental_selected: data.rental_selected
+    })
+  })
+    .then(response => response.json())
+    .then(response => data.payment_id = response['payment']['id']);
+}
+
 const computed = {
   rental_price: function() { return Number.parseFloat(this.rental_length).toFixed(2) },
   rental_period: function() { return this.rental_selected == 'Bouncy Castle' ? 'days' : 'weeks' },
@@ -34,21 +52,7 @@ const paymentForm = new SqPaymentForm({
   callbacks: {
     cardNonceResponseReceived: function(errors, nonce, paymentData, contacts) {
       if (!errors) {
-        fetch('/.netlify/functions/create-payment', {
-          method: 'POST',
-          body: JSON.stringify({
-            nonce: nonce,
-            rental_length: data.rental_length,
-            tip: Number.parseInt(Number.parseFloat(data.delivery_tip)*100),
-            start_date: data.start_date,
-            rental_address: data.rental_address,
-            contact_name: data.contact_name,
-            contact_number: data.contact_number,
-            rental_selected: data.rental_selected
-          })
-        })
-          .then(response => response.json())
-          .then(response => data.payment_id = response['payment']['id']);
+        call_create_payment(nonce, data);
       }
     },
     methodsSupported: function(methods, unsupportedReason) {
@@ -165,9 +169,15 @@ function onGooglePaymentButtonClicked() {
   };
   paymentsClient.loadPaymentData(paymentDataRequest)
     .then(function(paymentData) {
-      console.log("RECEIVED PAYMENT DATA");
+      console.log('RECEIVED PAYMENT DATA');
       paymentToken = paymentData.paymentMethodData.tokenizationData.token;
       console.log(paymentToken);
+      effectiveNonce = 'gpay:' + paymentToken;
+      call_create_payment(effectiveNonce, data)
+        .catch(function(err) {
+          console.error('ERROR CALLING CREATE PAYMENT');
+          console.error(err);
+        });
     })
     .catch(function(err) {
       console.error("THERE WAS AN ERROR");
