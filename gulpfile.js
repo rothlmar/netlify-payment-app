@@ -23,13 +23,13 @@ function env_var_replace(match, p1, offset, string) {
 
 function html() {
   return src('src/*.html')
-    .pipe(replace(/#{(.*)}/g, square_env_var_replace))
+    .pipe(replace(/#{(.*?)}/g, square_env_var_replace))
     .pipe(dest('public'));
 }
 
 function js() {
   return src('src/js/*.js')
-    .pipe(replace(/#{(.*)}/g, env_var_replace))
+    .pipe(replace(/#{(.*?)}/g, env_var_replace))
     .pipe(dest('public/js'));
 }
 

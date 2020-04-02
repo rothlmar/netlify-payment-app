@@ -12,6 +12,13 @@ const data = {
   email_address: ''
 };
 
+const computed = {
+  rental_price: function() { return Number.parseFloat(this.rental_length).toFixed(2) },
+  rental_period: function() { return this.rental_selected == 'Bouncy Castle' ? 'days' : 'weeks' },
+  total_price: function() { return compute_total_price(this.rental_length, this.delivery_tip) },
+  payment_made: function() { return this.payment_id != null }
+}
+
 function compute_total_price(rental_length, delivery_tip) {
   deposit_amount = 2;
   total_amount = deposit_amount + Number.parseFloat(rental_length) +
@@ -37,17 +44,22 @@ function call_create_payment(nonce, data) {
     .then(response => data.payment_id = response['payment']['id']);
 }
 
-const computed = {
-  rental_price: function() { return Number.parseFloat(this.rental_length).toFixed(2) },
-  rental_period: function() { return this.rental_selected == 'Bouncy Castle' ? 'days' : 'weeks' },
-  total_price: function() { return compute_total_price(this.rental_length, this.delivery_tip) },
-  payment_made: function() { return this.payment_id != null }
-}
+const cardPaymentForm = new SqPaymentForm({
+  applicationId: '#{ square_application_id }',
+  card: { elementId: 'sq-card' },
+  callbacks: {
+    cardNonceResponseReceived: function(errors, nonce, paymentData, contacts) {
+      if (!errors) {
+        call_create_payment(nonce, data);
+      }
+    }
+  }
+});
+cardPaymentForm.build();
 
-const paymentForm = new SqPaymentForm({
+const gPayPaymentForm = new SqPaymentForm({
   applicationId: '#{ square_application_id }',
   locationId: '#{ square_location_id }',
-  // card: { elementId: 'sq-card' },
   googlePay: { elementId: 'sq-google-pay' },
   callbacks: {
     cardNonceResponseReceived: function(errors, nonce, paymentData, contacts) {
@@ -66,45 +78,25 @@ const paymentForm = new SqPaymentForm({
     },
     createPaymentRequest: function() {
       let paymentRequestJson = {
-        requestShippingAddres: true,
         requestBillingAddress: true,
         currencyCode: 'USD',
         countryCode: 'US',
         total: {
-          label: 'MERCHANT NAME',
-          amount: '1.00',
+          label: 'TOTAL AMOUNT',
+          amount: compute_total_price(data.rental_length, data.delivery_tip),
           pending: false
-        },
-        lineItems: [
-          {
-            label: 'Subtotal',
-            amount: '1.00',
-            pending: false
-          },
-          {
-            label: 'Shipping',
-            amount: '1.00',
-            pending: false
-          }
-        ],
-        shippingOptions: [
-          {
-            id: '1',
-            label: 'Standard',
-            amount: '1.00'
-          },
-          { id: '2',
-            label: 'Express',
-            amount: '2.00'
-          }
-        ]
+        }
       };
 
       return paymentRequestJson;
     }
   }
 });
-paymentForm.build();
+gPayPaymentForm.build();
+
+////////////////////
+// Google Pay Direct
+////////////////////
 
 const baseGooglePayRequest = {
   apiVersion: 2,
@@ -115,18 +107,19 @@ const tokenizationSpecification = {
   type: 'PAYMENT_GATEWAY',
   parameters: {
     gateway: 'square',
-    gatewayMerchantId: 'example'
+    gatewayMerchantId: '#{ square_location_id }'
   }
 };
 
-const allowedCardNetworks = ["AMEX", "DISCOVER", "INTERAC", "JCB", "MASTERCARD", "VISA"];
+const allowedCardNetworks = ["AMEX", "DISCOVER", "MASTERCARD", "VISA"];
 const allowedCardAuthMethods = ["PAN_ONLY", "CRYPTOGRAM_3DS"];
 
 const baseCardPaymentMethod = {
   type: 'CARD',
   parameters: {
     allowedAuthMethods: allowedCardAuthMethods,
-    allowedCardNetworks: allowedCardNetworks
+    allowedCardNetworks: allowedCardNetworks,
+    billingAddressRequired: true
   }
 };
 
@@ -135,17 +128,20 @@ const cardPaymentMethod = Object.assign(
   baseCardPaymentMethod
 );
 
-let paymentsClient;
+let googlePaymentsClient;
 
 function doGoogleStuff() {
-  console.log("THIS IS LOADED AFTER GOOGLE PAY FORM LOADED");
-  paymentsClient = new google.payments.api.PaymentsClient({environment: 'TEST'});
+  googlePaymentsClient = new google.payments.api.PaymentsClient({
+    environment: '#{ google_pay_env }'
+  });
   const isReadyToPayRequest = Object.assign({}, baseGooglePayRequest);
   isReadyToPayRequest.allowedPaymentMethods = [baseCardPaymentMethod];
-  paymentsClient.isReadyToPay(isReadyToPayRequest)
+  googlePaymentsClient.isReadyToPay(isReadyToPayRequest)
     .then(function(response) {
       if (response.result) {
-        const button = paymentsClient.createButton({ onClick: onGooglePaymentButtonClicked });
+        const button = googlePaymentsClient.createButton(
+          { onClick: onGooglePaymentButtonClicked }
+        );
         document.getElementById('google-pay-direct').appendChild(button);
       }
     })
@@ -167,27 +163,23 @@ function onGooglePaymentButtonClicked() {
     merchantName: 'Example Merchant',
     merchantId: '01234567890123456789'
   };
-  paymentsClient.loadPaymentData(paymentDataRequest)
+  googlePaymentsClient.loadPaymentData(paymentDataRequest)
     .then(function(paymentData) {
-      console.log('RECEIVED PAYMENT DATA');
-      paymentToken = paymentData.paymentMethodData.tokenizationData.token;
-      console.log(paymentToken);
-      effectiveNonce = 'gpay:' + paymentToken;
+      const paymentToken = paymentData.paymentMethodData.tokenizationData.token;
+      const effectiveNonce = 'gpay:' + paymentToken;
       call_create_payment(effectiveNonce, data)
         .catch(function(err) {
-          console.error('ERROR CALLING CREATE PAYMENT');
-          console.error(err);
+          console.error('ERROR CALLING CREATE PAYMENT', err);
         });
     })
     .catch(function(err) {
-      console.error("THERE WAS AN ERROR");
-      console.error(err)
+      console.error('THERE WAS AN ERROR', err);
     });
 }
 
 function submitCardClick(event) {
   event.preventDefault();
-  paymentForm.requestCardNonce();
+  cardPaymentForm.requestCardNonce();
 }
 
 function sendEmail(payment_id, email_address) {

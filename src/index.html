@@ -117,16 +117,17 @@
                 </div>
               </div>
               <div class="form-container">
-                <h3>Pay Direct</h3>
+                <h3>Google Pay-Direct</h3>
                 <div id="google-pay-direct"></div>
-                <h3>Pay With Nonce</h3>
+                <h3>Google Pay-PaymentForm</h3>
                 <div>
                   <button id="sq-google-pay" class="button-google-pay"></button>
                 </div>
-                <!-- <div id="sq-card"></div> -->
-                <!-- <button class="button-credit-card" v-on:click="submitCardClick"> -->
-                <!--   Pay ${{ total_price }} -->
-                <!-- </button> -->
+                <h3>Pay With Card</h3>
+                <div id="sq-card"></div>
+                <button class="button-credit-card" v-on:click="submitCardClick">
+                  Pay ${{ total_price }}
+                </button>
               </div>
             </div>
             <div class="content" v-if="payment_made">
