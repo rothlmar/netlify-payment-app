@@ -1,3 +1,5 @@
+const LOCATION_ID = '#{ square_location_id }';
+
 const data = {
   rental_length: 3,
   deposit_amount: "2.00",
@@ -26,19 +28,25 @@ function compute_total_price(rental_length, delivery_tip) {
   return total_amount.toFixed(2);
 }
 
-function call_create_payment(nonce, data) {
+function call_create_payment(nonce, data, billingPostalCode) {
+  const req_body = {
+    nonce: nonce,
+    rental_length: data.rental_length,
+    tip: Number.parseInt(Number.parseFloat(data.delivery_tip)*100),
+    start_date: data.start_date,
+    rental_address: data.rental_address,
+    contact_name: data.contact_name,
+    contact_number: data.contact_number,
+    rental_selected: data.rental_selected,
+    location_id: LOCATION_ID
+  }
+  if (billingPostalCode !== undefined) {
+    req_body.billing_address = { postal_code: billingPostalCode }
+  }
+
   return fetch('/.netlify/functions/create-payment', {
     method: 'POST',
-    body: JSON.stringify({
-      nonce: nonce,
-      rental_length: data.rental_length,
-      tip: Number.parseInt(Number.parseFloat(data.delivery_tip)*100),
-      start_date: data.start_date,
-      rental_address: data.rental_address,
-      contact_name: data.contact_name,
-      contact_number: data.contact_number,
-      rental_selected: data.rental_selected
-    })
+    body: JSON.stringify(req_body)
   })
     .then(response => response.json())
     .then(response => data.payment_id = response['payment']['id']);
@@ -59,7 +67,7 @@ cardPaymentForm.build();
 
 const gPayPaymentForm = new SqPaymentForm({
   applicationId: '#{ square_application_id }',
-  locationId: '#{ square_location_id }',
+  locationId: LOCATION_ID,
   googlePay: { elementId: 'sq-google-pay' },
   callbacks: {
     cardNonceResponseReceived: function(errors, nonce, paymentData, contacts) {
@@ -107,7 +115,7 @@ const tokenizationSpecification = {
   type: 'PAYMENT_GATEWAY',
   parameters: {
     gateway: 'square',
-    gatewayMerchantId: '#{ square_location_id }'
+    gatewayMerchantId: LOCATION_ID
   }
 };
 
@@ -178,10 +186,9 @@ function onGooglePaymentButtonClicked() {
 function onPaymentAuthorized(paymentData) {
   return new Promise(function(resolve, reject) {
     const paymentToken = paymentData.paymentMethodData.tokenizationData.token;
-    console.log('PAYMENT DATA:');
-    console.log(paymentData);
+    const billingPostalCode = paymentData.paymentMethodData.info.billingAddress.postalCode;
     const effectiveNonce = 'gpay:' + paymentToken;
-    call_create_payment(effectiveNonce, data)
+    call_create_payment(effectiveNonce, data, billingPostalCode)
       .then(function() {
         resolve({ transactionState: 'SUCCESS' })
       })
