@@ -169,8 +169,8 @@ function getGooglePaymentDataRequest() {
     countryCode: 'US'
   };
   paymentDataRequest.merchantInfo = {
-    merchantName: 'Example Merchant',
-    merchantId: '01234567890123456789'
+    merchantName: '#{ google_pay_merchant_name }',
+    merchantId: '#{ google_pay_merchant_id }'
   };
   paymentDataRequest.callbackIntents = ['PAYMENT_AUTHORIZATION'];
   return paymentDataRequest;
