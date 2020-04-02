@@ -132,7 +132,8 @@ let googlePaymentsClient;
 
 function doGoogleStuff() {
   googlePaymentsClient = new google.payments.api.PaymentsClient({
-    environment: '#{ google_pay_env }'
+    environment: '#{ google_pay_env }',
+    paymentDataCallbacks: { onPaymentAuthorized: onPaymentAuthorized }
   });
   const isReadyToPayRequest = Object.assign({}, baseGooglePayRequest);
   isReadyToPayRequest.allowedPaymentMethods = [baseCardPaymentMethod];
@@ -150,7 +151,7 @@ function doGoogleStuff() {
     })
 }
 
-function onGooglePaymentButtonClicked() {
+function getGooglePaymentDataRequest() {
   const paymentDataRequest = Object.assign({}, baseGooglePayRequest);
   paymentDataRequest.allowedPaymentMethods = [cardPaymentMethod];
   paymentDataRequest.transactionInfo = {
@@ -163,18 +164,39 @@ function onGooglePaymentButtonClicked() {
     merchantName: 'Example Merchant',
     merchantId: '01234567890123456789'
   };
-  googlePaymentsClient.loadPaymentData(paymentDataRequest)
-    .then(function(paymentData) {
-      const paymentToken = paymentData.paymentMethodData.tokenizationData.token;
-      const effectiveNonce = 'gpay:' + paymentToken;
-      call_create_payment(effectiveNonce, data)
-        .catch(function(err) {
-          console.error('ERROR CALLING CREATE PAYMENT', err);
-        });
-    })
+  paymentDataRequest.callbackIntents = ['PAYMENT_AUTHORIZATION'];
+  return paymentDataRequest;
+}
+
+function onGooglePaymentButtonClicked() {
+  googlePaymentsClient.loadPaymentData(getGooglePaymentDataRequest())
     .catch(function(err) {
       console.error('THERE WAS AN ERROR', err);
     });
+}
+
+function onPaymentAuthorized(paymentData) {
+  return new Promise(function(resolve, reject) {
+    const paymentToken = paymentData.paymentMethodData.tokenizationData.token;
+    console.log('PAYMENT DATA:');
+    console.log(paymentData);
+    const effectiveNonce = 'gpay:' + paymentToken;
+    call_create_payment(effectiveNonce, data)
+      .then(function() {
+        resolve({ transactionState: 'SUCCESS' })
+      })
+      .catch(function(err) {
+        console.error('ERROR CALLING CREATE PAYMENT', err);
+        resolve({
+          transactionState: 'ERROR',
+          error: {
+            intent: 'PAYMENT_AUTHORIZATION',
+            message: 'An error occured, please try again',
+            reason: 'PAYMENT_DATA_INVALID'
+          }
+        })
+      });
+  })
 }
 
 function submitCardClick(event) {
