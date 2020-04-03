@@ -65,42 +65,43 @@ const cardPaymentForm = new SqPaymentForm({
 });
 cardPaymentForm.build();
 
-const gPayPaymentForm = new SqPaymentForm({
-  applicationId: '#{ square_application_id }',
-  locationId: LOCATION_ID,
-  googlePay: { elementId: 'sq-google-pay' },
-  callbacks: {
-    cardNonceResponseReceived: function(errors, nonce, paymentData, contacts) {
-      if (!errors) {
-        call_create_payment(nonce, data);
-      }
-    },
-    methodsSupported: function(methods, unsupportedReason) {
-      var googlePayBtn = document.getElementById('sq-google-pay');
-
-      if (methods.googlePay === true) {
-        googlePayBtn.style.display = 'inline-block';
-      } else {
-        console.log(unsupportedReason.message);
-      }
-    },
-    createPaymentRequest: function() {
-      let paymentRequestJson = {
-        requestBillingAddress: true,
-        currencyCode: 'USD',
-        countryCode: 'US',
-        total: {
-          label: 'TOTAL AMOUNT',
-          amount: compute_total_price(data.rental_length, data.delivery_tip),
-          pending: false
+if (document.getElementById('sq-google-pay') !== null) {
+  const gPayPaymentForm = new SqPaymentForm({
+    applicationId: '#{ square_application_id }',
+    locationId: LOCATION_ID,
+    googlePay: { elementId: 'sq-google-pay' },
+    callbacks: {
+      cardNonceResponseReceived: function(errors, nonce, paymentData, contacts) {
+        if (!errors) {
+          call_create_payment(nonce, data);
         }
-      };
+      },
+      methodsSupported: function(methods, unsupportedReason) {
+        var googlePayBtn = document.getElementById('sq-google-pay');
 
-      return paymentRequestJson;
+        if (methods.googlePay === true) {
+          googlePayBtn.style.display = 'inline-block';
+        } else {
+          console.log(unsupportedReason.message);
+        }
+      },
+      createPaymentRequest: function() {
+        let paymentRequestJson = {
+          requestBillingAddress: true,
+          currencyCode: 'USD',
+          countryCode: 'US',
+          total: {
+            label: 'TOTAL AMOUNT',
+            amount: compute_total_price(data.rental_length, data.delivery_tip),
+            pending: false
+          }
+        };
+        return paymentRequestJson;
+      }
     }
-  }
-});
-gPayPaymentForm.build();
+  });
+  gPayPaymentForm.build();
+}
 
 ////////////////////
 // Google Pay Direct
