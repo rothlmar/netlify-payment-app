@@ -37,19 +37,19 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <tr v-for="payment in payments">
+                  <tr v-for="(payment, index) in payments">
                     <td>{{ payment.status }}</td>
                     <td>{{ payment.total_money.amount/100 | toMoney }}</td>
                     <td>
-                      <div v-if="'info' in payment">
-                        <p v-if="'start_date' in payment.info">
-                          {{ payment.info.start_date }}
+                      <div v-if="'start_date' in payment">
+                        <p>
+                          {{ payment.start_date }}
                         </p>
-                        <p v-if="'contact_number' in payment.info">
-                          {{ payment.info.contact_number }} ({{ payment.info.contact_name }})
+                        <p v-if="'contact_number' in payment">
+                          {{ payment.contact_number }} ({{ payment.contact_name }})
                         </p>
-                        <p v-if="'rental_address' in payment.info">
-                          {{ payment.info.rental_address }}
+                        <p v-if="'rental_address' in payment">
+                          {{ payment.rental_address }}
                         </p>
                       </div>
                     </td>
@@ -61,12 +61,12 @@
                       </button>
                       <button class="button is-primary"
                               v-if="payment.status == 'APPROVED'"
-                              v-on:click="completePayment(payment.id)">
+                              v-on:click="completePayment(payment, index)">
                         Complete Payment
                       </button>
                       <button class="button is-warning"
                               v-if="payment.status == 'APPROVED'"
-                              v-on:click="cancelPayment(payment.id)">
+                              v-on:click="cancelPayment(payment, index)">
                         Cancel Payment
                       </button>
                     </td>

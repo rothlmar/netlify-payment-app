@@ -15,6 +15,16 @@ const app = new Vue({
   filters: { toMoney }
 });
 
+function getPayment(payment, index) {
+  fetch(`/.netlify/functions/get-payment?payment_id=${payment.id}`, { method: 'GET' })
+    .then(rsp => rsp.json())
+    .then(rsp => {
+      if (index !== undefined) {
+        Vue.set(app.payments, index, Object.assign({}, payment, rsp))
+      }
+    });
+}
+
 function getPayments() {
   if (netlifyIdentity.currentUser()) {
     return netlifyIdentity.currentUser().jwt().then(token => {
@@ -22,39 +32,33 @@ function getPayments() {
                    { method: 'GET',
                      headers: {'Authorization': `Bearer ${token}`}})})
       .then(response => response.json())
-      .then(response => data.payments = response['payments'])
-      .then(payments => {
-        payments.map(payment => {
-          fetch(`/.netlify/functions/get-payment?payment_id=${payment.id}`,
-                { method: 'GET' })
-            .then(rsp => rsp.json())
-            .then(rsp => {
-              payment.info = rsp;
-              app.$forceUpdate();
-            }) });
+      .then(response => {
+        response['payments'].forEach((element, index) => Vue.set(app.payments, index, element))
+        return app.payments;
       })
+      .then(payments => payments.map(getPayment));
   }
 }
 
-function completePayment(payment_id) {
+function completePayment(payment, index) {
   if (netlifyIdentity.currentUser()) {
     return netlifyIdentity.currentUser().jwt().then(token => {
       return fetch('/.netlify/functions/complete-payment',
                    { method: 'POST',
-                     body: JSON.stringify({payment_id: payment_id}),
+                     body: JSON.stringify({payment_id: payment.id}),
                      headers: {'Authorization': `Bearer ${token}`}})})
-      .then(() => setTimeout(getPayments, 2000));
+      .then(() => setTimeout(() => getPayment(payment, index), 1000));
   }
 }
 
-function cancelPayment(payment_id) {
+function cancelPayment(payment, index) {
   if (netlifyIdentity.currentUser()) {
     return netlifyIdentity.currentUser().jwt().then(token => {
       return fetch('/.netlify/functions/cancel-payment',
                    { method: 'POST',
-                     body: JSON.stringify({payment_id: payment_id}),
+                     body: JSON.stringify({payment_id: payment.id}),
                      headers: {'Authorization': `Bearer ${token}`}})})
-      .then(() => setTimeout(getPayments, 2000));
+      .then(() => setTimeout(() => getPayment(payment, index), 1000));
   }
 }
 
