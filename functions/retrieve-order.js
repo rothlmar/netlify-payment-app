@@ -8,6 +8,8 @@ exports.handler = function(event, context, callback) {
   const query_params = event.queryStringParameters;
   const order_id = query_params.order_id;
 
+  console.log(ordersApi);
+  console.log(order_id);
   ordersApi.retrieveOrder(order_id)
     .then(data =>
           callback(null, {statusCode: 200, body: JSON.stringify(data)}))
