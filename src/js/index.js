@@ -213,9 +213,9 @@ function submitCardClick(event) {
 }
 
 function retrieveOrderClick(event) {
-    fetch('/.netlify/functions/retrieve-order?order_id=yWyXJp48Bs6U8vzz2UmRqrHvAh4F', { method: 'GET' })
-      .then(rsp => rsp.json())
-      .then(rsp => console.log(rsp))
+  fetch(`/.netlify/functions/retrieve-order?order_id=yWyXJp48Bs6U8vzz2UmRqrHvAh4F&location_id=${LOCATION_ID}`, { method: 'GET' })
+    .then(rsp => rsp.json())
+    .then(rsp => console.log(rsp));
 }
 
 function getPayment(payment, index) {
