@@ -3,14 +3,14 @@ const data = { payment: null,
                new_tip: 0 };
 const computed = {
   tip: function() { return (this.payment != null) && ('tip_money' in this.payment) ?
-                    this.payment.tip_money.amount : 0 }
+                    this.payment.tipMoney.amount : 0 }
 }
 
 function processResponse(response) {
   response.json().then(response => {
     data.info = response;
     data.payment = response['payment'];
-    data.new_tip = data.payment.tip_money.amount / 100;
+    data.new_tip = data.payment.tipMoney.amount / 100;
   })
 }
 

@@ -20,11 +20,11 @@
                 <li>Address: {{ info.rental_address }}</li>
                 <li>Phone Number: {{ info.contact_number }}</li>
                 <li>Rental Start Date: {{ info.start_date }}</li>
-                <li>Amount: {{ payment.amount_money.amount/100 | toMoney }}</li>
+                <li>Amount: {{ payment.amountMoney.amount/100 | toMoney }}</li>
                 <li>
                   Tip: {{ tip / 100 | toMoney }}
                 </li>
-                <li>Total: {{ payment.total_money.amount/100 | toMoney }}</li>
+                <li>Total: {{ payment.totalMoney.amount/100 | toMoney }}</li>
                 <li>Payment Status: {{ payment.status }}</li>
               </ul>
               <div v-if="payment.status == 'APPROVED'">

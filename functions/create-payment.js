@@ -15,8 +15,8 @@ exports.handler = function(event, context, callback) {
     return callback(null, {statusCode: 404, body: '{"error": "Not found"}'});
   }
   const req_body_incoming = JSON.parse(event.body);
-  const amount_money = req_body_incoming.rental_length*WEEKLY_RENTAL_AMOUNT + DEPOSIT_AMOUNT;
-  const {source_id, location_id, tip, billing_address, ...rental_details} = req_body_incoming;
+  const amount_money = req_body_incoming.order_amount || req_body_incoming.rental_length*WEEKLY_RENTAL_AMOUNT + DEPOSIT_AMOUNT;
+  const {source_id, location_id, tip, billing_address, order_id, ...rental_details} = req_body_incoming;
 
   const idempotency_key = uuid4();
   const request_body = {
@@ -30,7 +30,10 @@ exports.handler = function(event, context, callback) {
     request_body.tip_money = { amount: tip, currency: config.CURRENCY};
   }
   if (billing_address) {
-    request_body.billing_address = billing_address
+    request_body.billing_address = billing_address;
+  }
+  if (order_id) {
+    request_body.order_id = order_id;
   }
 
   // Constructing this directly, instead of using the API, in case we want to use
