@@ -8,11 +8,14 @@ exports.handler = function(event, context, callback) {
   const query_params = event.queryStringParameters;
   const order_id = query_params.order_id;
 
-  console.log(ordersApi);
-  console.log(order_id);
-  ordersApi.batchRetrieveOrders({
-      order_ids: [order_id]
-  }).then(data =>
+  const bodyOrderIds = [order_id];
+  const body = {
+    order_ids: bodyOrderIds
+  };
+
+  console.log(body);
+
+  ordersApi.batchRetrieveOrders(body).then(data =>
           callback(null, {statusCode: 200, body: JSON.stringify(data)}))
     .catch(response =>
            callback(null, {statusCode: 500, body: JSON.stringify(response.data)}));
