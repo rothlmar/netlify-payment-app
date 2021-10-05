@@ -16,7 +16,7 @@ exports.handler = function(event, context, callback) {
   };
 
   console.log(`/v2/locations/${location_id}/orders/batch-retrieve`)
-  console.log(body);
+  console.log(request_body);
 
   axios.post(`/v2/locations/${location_id}/orders/batch-retrieve`, request_body)
   .then(data =>
