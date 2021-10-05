@@ -8,12 +8,10 @@
     <link rel="stylesheet" type="text/css" href="mysqpaymentform.css">
 
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
-    <script defer
-            type="text/javascript"
-            src="#{ square_payment_form_script_base_path }/v2/paymentform">
-    </script>
     <script defer src="/js/index.js"></script>
-    <script defer src="https://pay.google.com/gp/p/js/pay.js" onload="doGoogleStuff()"></script>
+    <script defer type="text/javascript"
+            src="#{ web_payments_sdk_script_base_path }/v1/square.js" onload="initWebPaymentsSdk()"></script>
+    <!-- <script defer src="https://pay.google.com/gp/p/js/pay.js" onload="doGoogleStuff()"></script> -->
   </head>
   <body>
     <section class="section">
@@ -116,18 +114,24 @@
                     </p>
                 </div>
               </div>
+              <!-- <div class="form-container"> -->
+              <!--   <h3>Google Pay Direct!</h3> -->
+              <!--   <div id="google-pay-direct"></div> -->
+              <!--   <\!-- <h3>Google Pay-PaymentForm</h3> -\-> -->
+              <!--   <\!-- <div> -\-> -->
+              <!--   <\!--   <button id="sq-google-pay" class="button-google-pay"></button> -\-> -->
+              <!--   <\!-- </div> -\-> -->
+              <!-- </div> -->
               <div class="form-container">
-                <h3>Google Pay Direct!</h3>
-                <div id="google-pay-direct"></div>
-                <!-- <h3>Google Pay-PaymentForm</h3> -->
-                <!-- <div> -->
-                <!--   <button id="sq-google-pay" class="button-google-pay"></button> -->
-                <!-- </div> -->
-                <h3>Pay With Card</h3>
-                <div id="sq-card"></div>
-                <button class="button-credit-card" v-on:click="submitCardClick">
-                  Pay ${{ total_price }}
-                </button>
+                <form id="payment-form">
+                  <div id="card-container"></div>
+                  <button id="card-button"
+                          class="button-credit-card"
+                          type="button"
+                          v-on:click="submitWpSdkClick">
+                    Pay ${{ total_price }}
+                  </button>
+                </form>
               </div>
             </div>
             <div class="content" v-if="payment_made">

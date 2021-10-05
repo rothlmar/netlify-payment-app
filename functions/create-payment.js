@@ -16,11 +16,11 @@ exports.handler = function(event, context, callback) {
   }
   const req_body_incoming = JSON.parse(event.body);
   const amount_money = req_body_incoming.rental_length*WEEKLY_RENTAL_AMOUNT + DEPOSIT_AMOUNT;
-  const {nonce, location_id, tip, billing_address, ...rental_details} = req_body_incoming;
+  const {source_id, location_id, tip, billing_address, ...rental_details} = req_body_incoming;
 
   const idempotency_key = uuid4();
   const request_body = {
-    source_id: nonce,
+    source_id: source_id,
     location_id: location_id,
     amount_money: { amount: amount_money, currency: config.CURRENCY },
     idempotency_key: idempotency_key,

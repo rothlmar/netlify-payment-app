@@ -4,21 +4,26 @@ const replace = require('gulp-replace');
 
 const env_dependent_substitutions = {
   PROD: {
-    SQUARE_PAYMENT_FORM_SCRIPT_BASE_PATH: 'https://js.squareup.com'
+    SQUARE_PAYMENT_FORM_SCRIPT_BASE_PATH: 'https://js.squareup.com',
+    WEB_PAYMENTS_SDK_SCRIPT_BASE_PATH: 'https://web.squarecdn.com'
   },
   SANDBOX: {
-    SQUARE_PAYMENT_FORM_SCRIPT_BASE_PATH: 'https://js.squareupsandbox.com'
+    SQUARE_PAYMENT_FORM_SCRIPT_BASE_PATH: 'https://js.squareupsandbox.com',
+    WEB_PAYMENTS_SDK_SCRIPT_BASE_PATH: 'https://sandbox.web.squarecdn.com'
   }
 
 }
 
 function square_env_var_replace(match, p1, offset, string) {
   const square_env = process.env.SQUARE_ENV.toUpperCase();
-  return env_dependent_substitutions[square_env][p1.trim().toUpperCase()];
+  const base_var = p1.trim().toUpperCase();
+  return env_dependent_substitutions[square_env][base_var] || process.env[base_var + '_' + square_env];
 }
 
 function env_var_replace(match, p1, offset, string) {
-  return process.env[p1.trim().toUpperCase()];
+  const square_env = process.env.SQUARE_ENV.toUpperCase();
+  const base_var = p1.trim().toUpperCase();
+  return process.env[base_var] || process.env[base_var + '_' + square_env];
 }
 
 function html() {
