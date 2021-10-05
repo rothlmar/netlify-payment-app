@@ -17,5 +17,6 @@ module.exports = {
   CURRENCY: 'USD',
   EMAIL_FROM: 'rothlmar@gmail.com',
   APPLICATION_BASE: 'https://payment-app-hackweek.netlify.com',
-  PAYMENTS_API: new SquareConnect.PaymentsApi()
+  PAYMENTS_API: new SquareConnect.PaymentsApi(),
+  ORDERS_API: new SquareConnect.OrdersApi()
 }
