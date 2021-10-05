@@ -212,6 +212,22 @@ function submitCardClick(event) {
   cardPaymentForm.requestCardNonce();
 }
 
+function retrieveOrderClick(event) {
+    fetch('/.netlify/functions/retrieve-order?order_id=yWyXJp48Bs6U8vzz2UmRqrHvAh4F', { method: 'GET' })
+      .then(rsp => rsp.json())
+      .then(rsp => console.log(rsp))
+}
+
+function getPayment(payment, index) {
+  fetch(`/.netlify/functions/get-payment?payment_id=${payment.id}`, { method: 'GET' })
+    .then(rsp => rsp.json())
+    .then(rsp => {
+      if (index !== undefined) {
+        Vue.set(app.payments, index, Object.assign({}, payment, rsp))
+      }
+    });
+}
+
 function sendEmail(payment_id, email_address) {
   return fetch('/.netlify/functions/send-email', {
     method: 'POST',
@@ -223,5 +239,5 @@ const app = new Vue({
   el: '#app',
   data: data,
   computed: computed,
-  methods: { submitCardClick, sendEmail }
+  methods: { submitCardClick, sendEmail, retrieveOrderClick }
 });
