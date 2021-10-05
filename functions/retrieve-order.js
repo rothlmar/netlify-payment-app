@@ -1,4 +1,5 @@
 const config = require('./config');
+const SquareConnect = require('square-connect');
 const ordersApi = config.ORDERS_API;
 
 exports.handler = function(event, context, callback) {
@@ -9,9 +10,9 @@ exports.handler = function(event, context, callback) {
   const order_id = query_params.order_id;
 
   const bodyOrderIds = [order_id];
-  const body = {
+  const body = SquareConnect.OrdersApi.constructFromObject({
     order_ids: bodyOrderIds
-  };
+  });
 
   console.log(body);
 
