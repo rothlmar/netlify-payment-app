@@ -16,18 +16,20 @@
           <div class="column is-8">
             <div class="content">
               <ul v-if="payment != null">
-                <li>Rental Type: {{ info.rental_selected }}</li>
-                <li>Address: {{ info.rental_address }}</li>
-                <li>Phone Number: {{ info.contact_number }}</li>
-                <li>Rental Start Date: {{ info.start_date }}</li>
-                <li>Amount: {{ payment.amount_money.amount/100 | toMoney }}</li>
+                <li>Rental Type: {{ order.lineItems[order.lineItems.length - 1].name }}</li>
+                <li>Customer Name: {{ recipient && recipient.displayName }}</li>
+                <li>Address: {{ recipient && recipient.address.addressLine1 }}</li>
+                <li>Phone Number: {{ recipient && recipient.phoneNumber }}</li>
+                <li>Rental Start Date: {{ metadata && metadata.startDate }}</li>
+                <li>Rental Length: {{ metadata && metadata.rentalLength }}</li>
+                <li>Amount: {{ payment.amountMoney.amount/100 | toMoney }}</li>
                 <li>
                   Tip: {{ tip / 100 | toMoney }}
                 </li>
-                <li>Total: {{ payment.total_money.amount/100 | toMoney }}</li>
+                <li>Total: {{ payment.totalMoney.amount/100 | toMoney }}</li>
                 <li>Payment Status: {{ payment.status }}</li>
               </ul>
-              <div v-if="payment.status == 'APPROVED'">
+              <div v-if="payment && payment.status == 'APPROVED'">
                 <h3>Adjustment</h3>
                 <p>You may change the amount of the tip</p>
                 <div class="field is-horizontal">

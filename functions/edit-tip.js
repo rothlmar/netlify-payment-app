@@ -1,8 +1,10 @@
 const config = require('./config');
-const axios = require('axios');
+const { sqStringify } = require('./util');
 const uuid4 = require('uuid/v4');
 
-exports.handler = function(event, context, callback) {
+const paymentsApi = config.PAYMENTS_API;
+
+exports.handler = async function(event, context, callback) {
   if (event.httpMethod != 'POST') {
     return callback(null, {statusCode: 404, body: '{"error": "Not found"}'});
   }
@@ -14,16 +16,18 @@ exports.handler = function(event, context, callback) {
     return callback(null, {statusCode: 400, body: '{"error": "Missing required field: payment_id"}'});
   }
 
+  const payment_id = req_body_incoming.payment_id;
   const idempotency_key = uuid4();
   const request_body = {
-    idempotency_key: idempotency_key,
-    payment: { tip_money: { amount: req_body_incoming.tip, currency: config.CURRENCY } }
+    idempotencyKey: idempotency_key,
+    payment: { tipMoney: { amount: req_body_incoming.tip, currency: config.CURRENCY } }
   }
 
-  // This is an alpha API feature--not incuded in Square Connect SDK
-  axios.put(`/v2/payments/${req_body_incoming.payment_id}`, request_body)
-    .then(response =>
-          callback(null, {statusCode: 200, body: JSON.stringify(response.data)}))
-    .catch(response =>
-           callback(null, {statusCode: 500, body: JSON.stringify(response.data)}));
+  try {
+    const { result, ...httpResponse } = await paymentsApi.updatePayment(payment_id, request_body);
+    return callback(null, { statusCode: 200, body: sqStringify(result) });
+  } catch(error) {
+    console.log("ERROR: ", error);
+    return callback(null, { statusCode: 500, body: error });
+  }
 }
