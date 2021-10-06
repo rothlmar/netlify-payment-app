@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Equipment Rental</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.5/css/bulma.min.css">
+    <link rel="stylesheet" type="text/css" href="mysqpaymentform.css">
+
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script defer src="/js/pay-order.js"></script>
+    <script defer type="text/javascript"
+            src="#{ web_payments_sdk_script_base_path }/v1/square.js" onload="initWebPaymentsSdk()"></script>
+    <!-- <script defer src="https://pay.google.com/gp/p/js/pay.js" onload="doGoogleStuff()"></script> -->
+  </head>
+  <body>
+    <section class="section">
+      <div class="container" id="app">
+        <h1 class="title has-text-centered">A1 Medical Equipment and Party Rentals</h1>
+        <h2 class="has-text-centered">Review and Pay</h2>
+        <div class="columns is-mobile is-centered">
+          <div class="column is-half">
+            <div class="content" v-if="!payment_made">
+              <h3>Order Info</h3>
+              <div class="field is-horizontal" v-if="!order_present">
+                <div class="field-label">Id</div>
+                <div class="field-body">
+                  <div class="control">
+                    <input class="input" v-model="order_id">
+                  </div>
+                </div>
+              </div>
+              <div class="control" v-if="!order_present">
+                <button type="button"
+                        v-on:click="getOrder">
+                  Retrieve Order
+                </button>
+              </div>
+              <div v-if="order_present">
+                <div>
+                  State: {{ order.state }}
+                </div>
+                <div>
+                  Amount: {{ (order.totalMoney.amount/100).toFixed(2) }}
+                </div>
+                <table class="table">
+                  <thead>
+                    <th>Item type</th>
+                    <th>Quantity</th>
+                    <th>Amount</th>
+                  </thead>
+                  <tbody>
+                    <tr v-for="line_item in order.lineItems">
+                      <td>{{ line_item.itemType }}</td>
+                      <td>{{ line_item.quantity }}</td>
+                      <td>{{ (line_item.totalMoney.amount/100).toFixed(2) }}</td>
+                    </tr>
+                  </tbody>
+                </table>
+
+              </div>
+
+              <h3>Contact Information</h3>
+              <div class="field is-horizontal">
+                <div class="field-label">Name</div>
+                <div class="field-body">
+                  <p class="control">
+                    <input class="input" v-model="contact_name">
+                  </p>
+                </div>
+              </div>
+              <div class="field is-horizontal">
+                <div class="field-label">Phone Number</div>
+                <div class="field-body">
+                  <p class="control">
+                    <input class="input" v-model="contact_number">
+                  </p>
+                </div>
+              </div>
+              <div class="field is-expanded is-horizontal">
+                <div class="field-label">Delivery Address</div>
+                <div class="field-body">
+                  <div class="field is-expanded">
+                    <p class="control">
+                      <input class="input" v-model="rental_address">
+                    </p>
+                  </div>
+                </div>
+              </div>
+              <!-- <div class="field is-horizontal"> -->
+              <!--   <div class="field-label">Tip</div> -->
+              <!--   <div class="field-body"> -->
+              <!--     <p class="control"> -->
+              <!--       <input class="input is-primary" v-model="delivery_tip" type="number"> -->
+              <!--     </p> -->
+              <!--     <p class="help">For delivery person.</p> -->
+              <!--   </div> -->
+              <!-- </div> -->
+              <div class="form-container" v-show="order_present && order.state === 'OPEN'">
+                <form id="payment-form">
+                  <div id="card-container"></div>
+                  <button id="card-button"
+                          class="button-credit-card"
+                          type="button"
+                          v-on:click="submitWpSdkClick">
+                    Pay ${{ order_amount }}
+                  </button>
+                </form>
+              </div>
+            </div>
+            <div class="content" v-if="payment_made">
+              <p>Thank you for your reservation.</p>
+              <a v-bind:href="'/payments/' + payment_id">View Detail</a>
+              <p>To receive an email with a link to check on this reservation, please enter
+                your address here:
+                <input class="input" type="email" v-model="email_address">
+                <button class="button is-primary"
+                        v-on:click="sendEmail(payment_id, email_address)">
+                  Send Reminder Email
+                </button>
+              </p>
+              <p><a href="/" v-on:click="payment_id = null">Make another Payment</a></p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </body>
+</html>

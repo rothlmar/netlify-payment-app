@@ -33,7 +33,7 @@ function getPayments() {
                      headers: {'Authorization': `Bearer ${token}`}})})
       .then(response => response.json())
       .then(response => {
-        response['payments'].forEach((element, index) => Vue.set(app.payments, index, element))
+        response.forEach((element, index) => Vue.set(app.payments, index, element))
         return app.payments;
       })
       .then(payments => payments.map(getPayment));
