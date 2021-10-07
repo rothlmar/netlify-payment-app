@@ -11,7 +11,6 @@
     <script defer src="/js/pay-order.js"></script>
     <script defer type="text/javascript"
             src="#{ web_payments_sdk_script_base_path }/v1/square.js" onload="initWebPaymentsSdk()"></script>
-    <!-- <script defer src="https://pay.google.com/gp/p/js/pay.js" onload="doGoogleStuff()"></script> -->
   </head>
   <body>
     <section class="section">
@@ -51,61 +50,68 @@
                   </thead>
                   <tbody>
                     <tr v-for="line_item in order.lineItems">
-                      <td>{{ line_item.itemType }}</td>
+                      <td>{{ line_item.name }}</td>
                       <td>{{ line_item.quantity }}</td>
                       <td>{{ (line_item.totalMoney.amount/100).toFixed(2) }}</td>
                     </tr>
                   </tbody>
                 </table>
-
               </div>
-
-              <h3>Contact Information</h3>
-              <div class="field is-horizontal">
-                <div class="field-label">Name</div>
-                <div class="field-body">
-                  <p class="control">
-                    <input class="input" v-model="contact_name">
-                  </p>
-                </div>
+              <div v-if="order_present && !order_payable">
+                Total Paid: ${{ (order.tenders[0].amountMoney.amount/100).toFixed(2) }} <br>
+                Tip Amount: ${{ (order.tenders[0].tipMoney.amount/100).toFixed(2) }} <br>
+                Payment Status: {{ order.tenders[0].cardDetails.status }}
               </div>
-              <div class="field is-horizontal">
-                <div class="field-label">Phone Number</div>
-                <div class="field-body">
-                  <p class="control">
-                    <input class="input" v-model="contact_number">
-                  </p>
-                </div>
-              </div>
-              <div class="field is-expanded is-horizontal">
-                <div class="field-label">Delivery Address</div>
-                <div class="field-body">
-                  <div class="field is-expanded">
+              <div v-show="order_payable">
+                <h3>Delivery Information</h3>
+                <div class="field is-horizontal">
+                  <div class="field-label">Name</div>
+                  <div class="field-body">
                     <p class="control">
-                      <input class="input" v-model="rental_address">
+                      <input class="input" v-model="contact_name" readonly>
                     </p>
                   </div>
                 </div>
+                <div class="field is-horizontal">
+                  <div class="field-label">Phone Number</div>
+                  <div class="field-body">
+                    <p class="control">
+                      <input class="input" v-model="contact_number" readonly>
+                    </p>
+                  </div>
+                </div>
+                <div class="field is-expanded is-horizontal">
+                  <div class="field-label">Delivery Address</div>
+                  <div class="field-body">
+                    <div class="field is-expanded">
+                      <p class="control">
+                        <input class="input" v-model="rental_address" readonly>
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <div class="field is-horizontal">
+                  <div class="field-label">Add a Tip</div>
+                  <div class="field-body">
+                    <p class="control">
+                      <input class="input is-primary" v-model="delivery_tip" type="number">
+                    </p>
+                    <p class="help">For delivery person.</p>
+                  </div>
+                </div>
               </div>
-              <!-- <div class="field is-horizontal"> -->
-              <!--   <div class="field-label">Tip</div> -->
-              <!--   <div class="field-body"> -->
-              <!--     <p class="control"> -->
-              <!--       <input class="input is-primary" v-model="delivery_tip" type="number"> -->
-              <!--     </p> -->
-              <!--     <p class="help">For delivery person.</p> -->
-              <!--   </div> -->
-              <!-- </div> -->
-              <div class="form-container" v-show="order_present && order.state === 'OPEN'">
-                <form id="payment-form">
-                  <div id="card-container"></div>
-                  <button id="card-button"
-                          class="button-credit-card"
-                          type="button"
-                          v-on:click="submitWpSdkClick">
-                    Pay ${{ order_amount }}
-                  </button>
-                </form>
+              <div v-show="order_present && order_payable">
+                <div class="form-container">
+                  <form id="payment-form">
+                    <div id="card-container"></div>
+                    <button id="card-button"
+                            class="button-credit-card"
+                            type="button"
+                            v-on:click="submitWpSdkClick">
+                      Pay ${{ order_amount }}
+                    </button>
+                  </form>
+                </div>
               </div>
             </div>
             <div class="content" v-if="payment_made">

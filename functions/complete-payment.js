@@ -1,4 +1,5 @@
 const config = require('./config');
+const { sqStringify } = require('./util');
 
 const ADMIN_ROLE = 'admin';
 const paymentsApi = config.PAYMENTS_API;
@@ -16,9 +17,9 @@ exports.handler = async function(event, context, callback) {
 
   try {
     const { result, ...httpResponse} = await paymentsApi.completePayment(payment_id)
-    return callback(null, {statusCode: 200, body: JSON.stringify(result.payment)});
+    return callback(null, {statusCode: 200, body: sqStringify(result)});
   } catch(error) {
-    console.log('ERROR: ', JSON.stringify(error));
+    console.log('ERROR: ', error);
     return callback(null, {statusCode: 500, body: JSON.stringify(error)});
   }
 }

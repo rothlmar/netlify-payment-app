@@ -41,22 +41,23 @@
                     <td>{{ payment.status }}</td>
                     <td>{{ payment.totalMoney.amount/100 | toMoney }}</td>
                     <td>
-                      <div v-if="'start_date' in payment">
-                        <p>
-                          {{ payment.start_date }}
+                      <div v-if="payment.order && 'fulfillments' in payment.order">
+                        <p v-if="payment.order.fulfillments && payment.order.fulfillments[0].metadata">
+                          {{ payment.order.fulfillments[0].metadata.startDate }}
                         </p>
-                        <p v-if="'contact_number' in payment">
-                          {{ payment.contact_number }} ({{ payment.contact_name }})
+                        <p v-if="'recipient' in payment.order.fulfillments[0].shipmentDetails">
+                          {{ payment.order.fulfillments[0].shipmentDetails.recipient.phoneNumber }}
+                          ({{ payment.order.fulfillments[0].shipmentDetails.recipient.displayName }})
                         </p>
-                        <p v-if="'rental_address' in payment">
-                          {{ payment.rental_address }}
+                        <p v-if="'recipient' in payment.order.fulfillments[0].shipmentDetails">
+                          {{ payment.order.fulfillments[0].shipmentDetails.recipient.address.addressLine1 }}
                         </p>
                       </div>
                     </td>
                     <td>
                       <button class="button is-primary"
                               v-if="payment.status == 'APPROVED'"
-                              v-on:click="refundDeposit(payment.id, payment.amountMoney.amount)">
+                              v-on:click="refundDeposit(index)">
                         Refund Deposit
                       </button>
                       <button class="button is-primary"

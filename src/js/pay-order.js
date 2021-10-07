@@ -21,10 +21,14 @@ let card;
 const computed = {
   rental_price: function() { return Number.parseFloat(this.rental_length).toFixed(2) },
   rental_period: function() { return this.rental_selected == 'Bouncy Castle' ? 'days' : 'weeks' },
-  // total_price: function() { return this.order.totalMoney, Number.parseFloat(this.delivery_tip) },
   payment_made: function() { return this.payment_id != null },
   order_present: function() { return Object.keys(this.order).length !== 0 },
-  order_amount: function() { return this.order_present ? (this.order.totalMoney.amount/100).toFixed(2) : '0.00' }
+  order_payable: function() { return this.order_present && (!('tenders' in this.order) || this.order.tenders.length == 0) },
+  order_amount: function() { return this.order_present ? compute_order_price_with_tip(this.order.totalMoney, this.delivery_tip) : '0.00' }
+}
+
+function compute_order_price_with_tip(orderMoney, tip) {
+  return (orderMoney.amount/100 + Number.parseFloat(tip)).toFixed(2);
 }
 
 function compute_total_price(rental_length, delivery_tip) {
@@ -35,12 +39,22 @@ function compute_total_price(rental_length, delivery_tip) {
 }
 
 function getOrder(event) {
-  event.preventDefault();
+  if (event) {
+    event.preventDefault();
+  }
   return fetch(`/.netlify/functions/get-order?order_id=${data.order_id}`, {
     method: 'GET'
   })
     .then(response => response.json())
-    .then(response => data.order = response.order);
+    .then(response => {
+      data.order = response.order;
+      if ('fulfillments' in data.order && data.order.fulfillments[0].shipmentDetails.recipient) {
+        recipient = data.order.fulfillments[0].shipmentDetails.recipient;
+        data.contact_name = recipient.displayName;
+        data.rental_address = recipient.address.addressLine1;
+        data.contact_number = recipient.phoneNumber;
+      }
+    });
 }
 
 function call_create_payment(source_id, data, billingPostalCode) {
@@ -268,9 +282,18 @@ function sendEmail(payment_id, email_address) {
   });
 }
 
+function populateOrderId() {
+  const order_id = window.location.pathname.split('/')[2];
+  if (order_id) {
+    data.order_id = order_id;
+    getOrder();
+  }
+}
+
 const app = new Vue({
   el: '#app',
   data: data,
   computed: computed,
-  methods: { sendEmail, submitWpSdkClick, getOrder }
+  methods: { sendEmail, submitWpSdkClick, getOrder },
+  beforeMount: populateOrderId
 });

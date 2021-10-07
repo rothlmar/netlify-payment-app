@@ -20,7 +20,8 @@ function getPayment(payment, index) {
     .then(rsp => rsp.json())
     .then(rsp => {
       if (index !== undefined) {
-        Vue.set(app.payments, index, Object.assign({}, payment, rsp))
+        rsp.payment.order = rsp.order;
+        Vue.set(app.payments, index, Object.assign({}, payment, rsp.payment));
       }
     });
 }
@@ -62,14 +63,23 @@ function cancelPayment(payment, index) {
   }
 }
 
-function refundDeposit(payment_id, current_amount) {
+function refundDeposit(index) {
+  const payment = data.payments[index];
+  const new_payment_amount = payment.amountMoney.amount - 200;
+  const order = {
+    id: payment.order.id,
+    location_id: payment.order.locationId,
+    version: payment.order.version,
+    deposit_line_item_uid: payment.order.lineItems[0].uid
+  }
+
   if (netlifyIdentity.currentUser()) {
     return netlifyIdentity.currentUser().jwt().then(token => {
       return fetch('/.netlify/functions/edit-amount',
                    { method: 'POST',
-                     body: JSON.stringify({payment_id: payment_id, amount: current_amount - 200}),
+                     body: JSON.stringify({payment_id: payment.id, amount: new_payment_amount, order: order}),
                      headers: {'Authorization': `Bearer ${token}`}})})
-      .then(() => setTimeout(getPayments, 2000));
+      .then(() => setTimeout(() => getPayment(payment, index), 1000));
   }
 }
 

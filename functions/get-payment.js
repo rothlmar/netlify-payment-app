@@ -1,4 +1,5 @@
 const config = require('./config');
+const { sqStringify } = require('./util')
 const faunadb = require('faunadb');
 const q = faunadb.query;
 const db_client = new faunadb.Client({
@@ -17,16 +18,12 @@ exports.handler = async function(event, context, callback) {
 
   try {
     const { result, ...httpResponse } = await paymentsApi.getPayment(payment_id);
-    payment_data = {payment: result.payment};
-    order_id = result.payment.orderId;
-    console.log("ORDER_ID: ", order_id);
-    const { order_result, ...orderHttpResponse } = await ordersApi.retrieveOrder(order_id);
-    console.log("ORDER_RESULT: ", order_result);
-    const data = Object.assign({}, payment_data, order_result);
+    const payment_data = {payment: result.payment};
+    const order_id = result.payment.orderId;
+    const orderResponse = await ordersApi.retrieveOrder(order_id);
+    const data = Object.assign({}, payment_data, orderResponse.result);
 
-    return callback(null, {statusCode: 200, body: JSON.stringify(data, (key, value) => {
-          return typeof value === "bigint" ? parseInt(value) : value;
-    })});
+    return callback(null, {statusCode: 200, body: sqStringify(data)});
 
     // db_client.query(q.Get(q.Match(q.Index("by_payment_id"), payment_id)))
     //   .then(db_rsp => {
