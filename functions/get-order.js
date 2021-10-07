@@ -10,10 +10,14 @@ exports.handler = async function(event, context, callback) {
     console.log(result);
     return callback(null, {statusCode: 200, body: JSON.stringify(result, (key, value) => {
           return typeof value === "bigint" ? parseInt(value) : value;
-    })});
+    }), headers: {
+      "Access-Control-Allow-Origin": "*"
+    }});
 
   } catch(error) {
     console.log("ERROR: ", error);
-    return callback(null, { statusCode: 500, body: error });
+    return callback(null, { statusCode: 500, body: error, headers: {
+      "Access-Control-Allow-Origin": "*"
+    } });
   }
 }
