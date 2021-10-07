@@ -9,9 +9,12 @@ exports.handler = async function(event, context, callback) {
   try {
     const { result, ...httpResponse } = await ordersApi.retrieveOrder(order_id);
     console.log(result);
-    return callback(null, { statusCode: 200, body: sqStringify(result)});
+    return callback(null, { statusCode: 200, body: sqStringify(result)
+                           headers: { "Access-Control-Allow-Origin": "*" }});
   } catch(error) {
     console.log("ERROR: ", error);
-    return callback(null, { statusCode: 500, body: error });
+    return callback(null, { statusCode: 500, body: error, headers: {
+      "Access-Control-Allow-Origin": "*"
+    } });
   }
 }
