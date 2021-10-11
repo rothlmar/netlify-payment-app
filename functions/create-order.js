@@ -7,7 +7,6 @@ const ordersApi = config.ORDERS_API;
 const WEEKLY_RENTAL_AMOUNT = 100;
 const DEPOSIT_AMOUNT = 200;
 
-
 exports.handler = async function(event, context, callback) {
   if (event.httpMethod != 'POST') {
     return callback(null, {statusCode: 404, body: '{"error": "Not found"}'});

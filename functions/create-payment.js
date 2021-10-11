@@ -1,18 +1,12 @@
 const config = require('./config');
 const { sqStringify } = require('./util');
 const uuid4 = require('uuid/v4');
-const faunadb = require('faunadb');
-const q = faunadb.query;
-const db_client = new faunadb.Client({
-  secret: process.env.FAUNADB_ACCESS_KEY
-});
 
 const paymentsApi = config.PAYMENTS_API;
 const ordersApi = config.ORDERS_API;
 
 const WEEKLY_RENTAL_AMOUNT = 100;
 const DEPOSIT_AMOUNT = 200;
-
 
 exports.handler = async function(event, context, callback) {
   if (event.httpMethod != 'POST') {
