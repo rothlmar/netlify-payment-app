@@ -4,6 +4,9 @@ const ordersApi = config.ORDERS_API;
 
 exports.handler = async function(event, context, callback) {
   const query_params = event.queryStringParameters;
+  if (!('order_id') in query_params) {
+    return callback(null, {statusCode: 404, body: '{"error": "Not found"}'});
+  }
   const order_id = query_params.order_id;
 
   try {

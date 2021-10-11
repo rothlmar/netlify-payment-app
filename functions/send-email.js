@@ -32,5 +32,5 @@ ${config.APPLICATION_BASE}/payments/${req_body_incoming.payment_id}`;
   }
 
   sgMail.send(msg).then(rsp =>
-                        callback(null, {statusCode: 200, body: '{"status": "success"}'}));
+    callback(null, {statusCode: 200, body: '{"status": "success"}'}));
 }

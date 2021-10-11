@@ -49,8 +49,6 @@ function call_create_order(data) {
     .then(response => data.order_id = response['order']['id']);
 }
 
-
-
 async function submitCreateOrder(event) {
   event.preventDefault();
   call_create_order(data);
