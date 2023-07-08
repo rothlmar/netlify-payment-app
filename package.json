@@ -20,7 +20,7 @@
     "gulp-replace": "^1.0.0"
   },
   "dependencies": {
-    "@sendgrid/mail": "^6.5.5",
+    "@sendgrid/mail": "^7.7.0",
     "axios": "^0.21.2",
     "dotenv": "^8.2.0",
     "faunadb": "^4.4.1",
