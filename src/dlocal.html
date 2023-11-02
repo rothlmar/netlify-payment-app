@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="https://js-sandbox.dlocal.com"></script>
+  </head>
+  <body>
+    <div>
+      <h1>PAY ME!</h1>
+      <div id="card-field">
+      </div>
+    </div>
+  </body>
+  <script>
+    var dlocal = dlocal('83609925-c115-4ab5-a9ea-00c31abb15fb');
+    var fields = dlocal.fields({locale: 'en', country: 'BR'});
+
+    var dlocalStyle = {
+      base: {
+        fontSize: '16px',
+        color: "#32325d",
+      }
+    };
+    var dlocalCard = fields.create('card', {style: dlocalStyle});
+    dlocalCard.mount(document.getElementById('card-field'));
+  </script>
+</html>
