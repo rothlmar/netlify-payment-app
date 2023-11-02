@@ -8,6 +8,7 @@
     <link rel="stylesheet" type="text/css" href="mysqpaymentform.css">
 
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://js-sandbox.dlocal.com"></script>
     <script defer src="/js/index.js"></script>
     <script defer type="text/javascript"
             src="#{ web_payments_sdk_script_base_path }/v1/square.js" onload="initWebPaymentsSdk()"></script>
@@ -122,9 +123,6 @@
               <!--   <\!--   <button id="sq-google-pay" class="button-google-pay"></button> -\-> -->
               <!--   <\!-- </div> -\-> -->
                         <!-- </div> -->
-              <div>
-                <h3>MORE PAYMENT OPTIONS</h3>
-              </div>
               <div class="form-container">
                 <form id="payment-form">
                   <div id="card-container"></div>
@@ -135,6 +133,11 @@
                     Pay ${{ total_price }}
                   </button>
                 </form>
+              </div>
+            </div>
+            <div>
+              <h3>MORE PAYMENT OPTIONS</h3>
+              <div id="card-field">
               </div>
             </div>
             <div class="content" v-if="payment_made">
@@ -155,4 +158,17 @@
       </div>
     </section>
   </body>
+  <script>
+    var dlocal = dlocal('83609925-c115-4ab5-a9ea-00c31abb15fb');
+    var fields = dlocal.fields({locale: 'en', country: 'BR'});
+
+    var dlocalStyle = {
+      base: {
+        fontSize: '16px',
+        color: "#32325d",
+      }
+    };
+    var dlocalCard = fields.create('card', {style: dlocalStyle});
+    dlocalCard.mount(document.getElementById('card-field'));
+  </script>
 </html>
