@@ -12,6 +12,21 @@
   status = 200
 
 [[redirects]]
+  from = "/q/*"
+  to = "/q.html"
+  status = 200
+
+[[redirects]]
   from = "/pay-order/*"
   to = "/pay-order.html"
+  status = 200
+
+[[redirects]]
+  from = "/r/*"
+  to = "https://squareup.com/receipt/preview/:splat"
+  status = 200
+
+[[redirects]]
+  from = "/p/*"
+  to = "https://squareup.com/receipt/printable/:splat"
   status = 200

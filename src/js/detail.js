@@ -3,10 +3,11 @@ const data = { payment: null,
                recipient: null,
                metadata: null,
                info: null,
-               new_tip: 0 };
+               new_tip: 0,
+	       raw_receipt: null };
 const computed = {
-  tip: function() { return (this.payment != null) && ('tipMoney' in this.payment) ?
-                    this.payment.tipMoney.amount : 0 }
+    tip: function() { return (this.payment != null) && ('tipMoney' in this.payment) ?
+                      this.payment.tipMoney.amount : 0 }
 }
 
 function processResponse(response) {

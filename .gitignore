@@ -2,3 +2,5 @@
 public/*.html
 public/js/*.js
 .env
+# Local Netlify folder
+.netlify
