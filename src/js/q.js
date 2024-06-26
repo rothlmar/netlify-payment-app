@@ -10,19 +10,19 @@ function parseReceiptHtml(html) {
 
     const address = [];
     for (let item of html.getElementsByClassName('receipt-address')) {
-	address.push(item.innerText);
+    address.push(item.innerText);
     }
     
     const metadata = [];
     for (let item of html.getElementsByClassName('text-tertiary')) {
-	metadata.push(item.innerText);
+    metadata.push(item.innerText);
     }
 
     const items = [];
     const itemNames = html.getElementsByClassName('item-name');
     const amounts = html.getElementsByClassName('currency');
     for (var idx = 0; idx < itemNames.length; idx++) {
-	items.push([itemNames[idx].innerText, amounts[0].innerText]);
+    items.push([itemNames[idx].innerText, amounts[0].innerText]);
     }
     
     const purchaseTotalElt = html.getElementsByClassName('purchase-total');
@@ -35,10 +35,10 @@ function parseReceiptHtml(html) {
 function generatePdf(receiptData) {
     const jsPDF = window.jspdf.jsPDF;
     const doc = new jsPDF({
-	orientation: "portrait",
-	format: "letter",
-	unit: "px",
-	hotfixes: ["px_scaling"]
+    orientation: "portrait",
+    format: "letter",
+    unit: "px",
+    hotfixes: ["px_scaling"]
     });
 
     
@@ -102,10 +102,10 @@ function sharePdf() {
     const pdf = new File([fileByteArray], `${receiptName}.pdf`, {type: "application/pdf"});
     const files = [pdf];
     if (navigator.canShare({ files })) {
-	navigator.share({ files });
+    navigator.share({ files });
     } else {
-	alert('navigator not able to share file');
-	doc.save(receiptName);
+    alert('navigator not able to share file');
+    doc.save(receiptName);
     }
 }
 
@@ -139,6 +139,29 @@ function sharePdfReceipt(payment_id) {
     document.body.appendChild(hideFrame);
 }
 
+function captureImageAndShare(html) {
+    html2canvas(html).then(canvas => {
+        canvas.toBlob(blob => {
+            const img = new File([blob], 'receipt.png', { type: 'image/png' });
+            const files = [img];
+            navigator.share({ files });
+        });
+    });
+}
+
+function shareImageReceipt(payment_id) {
+    const url = `/p/${payment_id}`;
+    console.log(`creating image for ${payment_id}`);
+    const hideFrame = document.createElement('iframe');
+    hideFrame.onload = function () {
+        const html = hideFrame.contentWindow.document.body;
+        captureImageAndShare(html);
+    };
+    hideFrame.style.display = "none";
+    hideFrame.src = url;
+    document.body.appendChild(hideFrame);
+}
+
 window.onload = (event) => {
     const payment_id = window.location.pathname.split('/')[2];
     console.log(`payment_id: ${payment_id}`);
@@ -151,11 +174,12 @@ window.onload = (event) => {
 
     const button = document.getElementById("sharebutton");
     button.addEventListener("click", (event) => {
-	if (!navigator.canShare) {
-	    // printReceipt(payment_id);
-	    pdfReceipt(payment_id);
-	} else {
-	    sharePdfReceipt(payment_id);
-	}
+    if (!navigator.canShare) {
+        // printReceipt(payment_id);
+        pdfReceipt(payment_id);
+    } else {
+        // sharePdfReceipt(payment_id);
+        shareImageReceipt(payment_id);
+    }
     });
 }
