@@ -10,19 +10,19 @@ function parseReceiptHtml(html) {
 
     const address = [];
     for (let item of html.getElementsByClassName('receipt-address')) {
-    address.push(item.innerText);
+        address.push(item.innerText);
     }
     
     const metadata = [];
     for (let item of html.getElementsByClassName('text-tertiary')) {
-    metadata.push(item.innerText);
+        metadata.push(item.innerText);
     }
 
     const items = [];
     const itemNames = html.getElementsByClassName('item-name');
     const amounts = html.getElementsByClassName('currency');
     for (var idx = 0; idx < itemNames.length; idx++) {
-    items.push([itemNames[idx].innerText, amounts[0].innerText]);
+        items.push([itemNames[idx].innerText, amounts[0].innerText]);
     }
     
     const purchaseTotalElt = html.getElementsByClassName('purchase-total');
@@ -35,13 +35,12 @@ function parseReceiptHtml(html) {
 function generatePdf(receiptData) {
     const jsPDF = window.jspdf.jsPDF;
     const doc = new jsPDF({
-    orientation: "portrait",
-    format: "letter",
-    unit: "px",
-    hotfixes: ["px_scaling"]
+        orientation: "portrait",
+        format: "letter",
+        unit: "px",
+        hotfixes: ["px_scaling"]
     });
 
-    
     const lineAdjustment = 1.4;
     const xMargin = 40;
     let yCursor = 40;
@@ -102,10 +101,10 @@ function sharePdf() {
     const pdf = new File([fileByteArray], `${receiptName}.pdf`, {type: "application/pdf"});
     const files = [pdf];
     if (navigator.canShare({ files })) {
-    navigator.share({ files });
+        navigator.share({ files });
     } else {
-    alert('navigator not able to share file');
-    doc.save(receiptName);
+        alert('navigator not able to share file');
+        doc.save(receiptName);
     }
 }
 
