@@ -149,7 +149,7 @@ function captureImageAndShare(html) {
 }
 
 function shareImageReceipt(payment_id) {
-    const url = `/p/${payment_id}`;
+    const url = `/r/${payment_id}`;
     console.log(`creating image for ${payment_id}`);
     const hideFrame = document.createElement('iframe');
     hideFrame.onload = function () {
