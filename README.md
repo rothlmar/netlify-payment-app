@@ -15,7 +15,6 @@ Because this is a hack week project, we're going to use all the coolest things:
 * Bulma (CSS framework)
 * Gulp (Static file build, maybe not the coolest)
 
-
 The following environment variables need to be defined:
 * FAUNADB_ACCESS_KEY
 * SENDGRID_API_KEY
