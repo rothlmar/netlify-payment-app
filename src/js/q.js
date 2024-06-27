@@ -150,6 +150,7 @@ function captureImageAndShare(html) {
     const tableFooter = html.getElementsByClassName("table-footer")[0];
     tableFooter?.children[0].remove();
     tableFooter.style.height = "87px";
+    tableFooter.style.width= "100%";
 
     html2canvas(html).then(canvas => {
         canvas.toBlob(blob => {
