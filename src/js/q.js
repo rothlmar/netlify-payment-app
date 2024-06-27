@@ -148,8 +148,9 @@ function captureImageAndShare(html) {
 
     // Remove footer since the links are not clickable in an image.
     const tableFooter = html.getElementsByClassName("table-footer")[0];
-    tableFooter?.remove();
-    
+    tableFooter?.children[0].remove();
+    tableFooter.style.height = "87px";
+
     html2canvas(html).then(canvas => {
         canvas.toBlob(blob => {
             const img = new File([blob], 'receipt.png', { type: 'image/png' });
