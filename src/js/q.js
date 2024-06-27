@@ -145,6 +145,10 @@ function captureImageAndShare(html) {
     profileImage?.remove();
     const feedbackBox = html.getElementsByClassName("feedback-tile-box")[0];
     feedbackBox?.parentElement?.remove();
+
+    // Remove footer since the links are not clickable in an image.
+    const tableFooter = html.getElementsByClassName("table-footer")[0];
+    tableFooter?.remove();
     
     html2canvas(html).then(canvas => {
         canvas.toBlob(blob => {
