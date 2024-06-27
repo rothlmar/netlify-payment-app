@@ -139,6 +139,13 @@ function sharePdfReceipt(payment_id) {
 }
 
 function captureImageAndShare(html) {
+    // Remove sections with prominent images since we can't display them
+    // at the moment due to CORS errors.
+    const profileImage = html.getElementsByClassName("profile_image_position")[0];
+    profileImage?.remove();
+    const feedbackBox = html.getElementsByClassName("feedback-tile-box")[0];
+    feedbackBox?.parentElement?.remove();
+    
     html2canvas(html).then(canvas => {
         canvas.toBlob(blob => {
             const img = new File([blob], 'receipt.png', { type: 'image/png' });
